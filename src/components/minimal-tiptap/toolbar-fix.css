@@ -1,6 +1,6 @@
 /* Fix for toolbar button styling */
 .toolbar-container button {
-  color: #333 !important;
+  color: #555555 !important;
 }
 
 .toolbar-container button[data-state="on"] {

@@ -248,14 +248,32 @@ body:not(.dashboard-page) .text-gray-700 {
 /* ==============================
    Testbank Create Page Overrides
    ============================== */
+.testbank-create .preview-content,
+.testbank-create .preview-content *,
 .testbank-create.dark .preview-content,
-.testbank-create.dark .preview-content *,
+.testbank-create.dark .preview-content * {
+  color: #111111 !important;
+}
+
+.testbank-create .editor-content,
+.testbank-create .editor-content *,
 .testbank-create.dark .editor-content,
 .testbank-create.dark .editor-content * {
+  color: #111111  ;
+}
+
+.dark .testbank-create .editor-content,
+.dark .testbank-create .editor-content * {
   color: #ffffff !important;
 }
 
-.dark .testbank-create .text-gray-800,
+.testbank-create .preview-content .text-gray-800,
 .dark .testbank-create .preview-content .text-gray-800 {
+  color: #ffffff !important;
+}
+
+/* Override the blue color for preview text */
+.testbank-create .text-gray-800,
+body:not(.dashboard-page) .testbank-create .text-gray-800 {
   color: #ffffff !important;
 }
