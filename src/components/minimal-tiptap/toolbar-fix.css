@@ -1,0 +1,14 @@
+/* Fix for toolbar button styling */
+.toolbar-container button {
+  color: #333 !important;
+}
+
+.toolbar-container button[data-state="on"] {
+  background-color: #e5e7eb !important;
+  color: #000 !important;
+}
+
+.toolbar-container button:hover {
+  background-color: #e5e7eb !important;
+  color: #000 !important;
+} 

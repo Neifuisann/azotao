@@ -1,0 +1,1 @@
+export { default as MinimalTiptapMinimal } from '../minimal-tiptap/minimal-tiptap-minimal'; 

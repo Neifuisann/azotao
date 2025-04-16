@@ -8,6 +8,8 @@ import { Routes, Route, Navigate, useLocation, Link } from "react-router-dom"
 import DashboardLayout from "./pages/dashboard/layout"
 import DashboardPage from "./pages/dashboard/index"
 import TestBankPage from "./pages/testbank/index"
+import CreateTestPage from "./pages/testbank/create"
+import TestConfigurationPage from "./pages/testbank/configuration"
 import DocumentMarketPage from "./pages/document-market/index"
 import QuestionBankPage from "./pages/question-bank/index"
 import { ThemeClassManager } from "./components/theme-class-manager"
@@ -119,6 +121,8 @@ function AppContent() {
         <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/testbank" element={<TestBankPage />} />
+          <Route path="/testbank/create" element={<CreateTestPage />} />
+          <Route path="/testbank/configuration" element={<TestConfigurationPage />} />
           <Route path="/document-market" element={<DocumentMarketPage />} />
           <Route path="/question-bank" element={<QuestionBankPage />} />
         </Route>

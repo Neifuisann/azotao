@@ -11,8 +11,6 @@ export default function DashboardPage() {
     <ContentLayout title="Dashboard">
 
 
-      <h2 className="text-2xl font-semibold mt-8 mb-4">Quick Access</h2>
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <Link to="/testbank" className="block">
           <Card className="h-full transition-all hover:shadow-md hover:-translate-y-1">

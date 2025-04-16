@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FilePlus, Search, Clock, CalendarDays } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Mock data for tests
 const recentTests = [
@@ -75,6 +76,7 @@ const allTests = [
 
 export default function TestBankPage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
   
   // Filter tests based on search query
   const filteredTests = allTests.filter(test => 
@@ -108,7 +110,10 @@ export default function TestBankPage() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <Button className="gap-2">
+        <Button 
+          className="gap-2"
+          onClick={() => navigate("/testbank/create")}
+        >
           <FilePlus className="h-4 w-4" />
           Create Test
         </Button>
