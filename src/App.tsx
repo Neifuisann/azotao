@@ -12,7 +12,6 @@ import CreateTestPage from "./pages/testbank/create"
 import TestConfigurationPage from "./pages/testbank/configuration"
 import DocumentMarketPage from "./pages/document-market/index"
 import QuestionBankPage from "./pages/question-bank/index"
-import { ThemeClassManager } from "./components/theme-class-manager"
 
 // Protected route component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -115,7 +114,6 @@ function AppContent() {
 
   return (
     <>
-      <ThemeClassManager />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>

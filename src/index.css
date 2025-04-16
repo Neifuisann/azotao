@@ -48,7 +48,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #000000;
+  --background: #111111;
   --foreground: #ffffff;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -63,7 +63,7 @@
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  --border: oklch(1 0 0 / 10%);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -234,64 +234,28 @@
 body:not(.dashboard-page) {
   color-scheme: dark;
   background-color: black;
-  color: white;
+  color: #fffffff4;
 }
 
 body:not(.dashboard-page) .text-gray-800 {
-  color: #f3f4f6;
+  color: #0767f6f4;
 }
 
 body:not(.dashboard-page) .text-gray-700 {
-  color: #d1d5db;
+  color: #0767f6e0;
 }
 
-html.force-dark {
-  color-scheme: dark;
+/* ==============================
+   Testbank Create Page Overrides
+   ============================== */
+.testbank-create.dark .preview-content,
+.testbank-create.dark .preview-content *,
+.testbank-create.dark .editor-content,
+.testbank-create.dark .editor-content * {
+  color: #ffffff !important;
 }
 
-.force-dark,
-.force-dark .bg-white {
-  background-color: black !important; 
-}
-
-.force-dark .text-gray-800,
-.force-dark .text-gray-700 {
-  color: #f3f4f6 !important;
-}
-
-.force-dark .text-blue-600 {
-  color: #3b82f6 !important;
-}
-
-.force-dark .bg-gray-100,
-.force-dark .bg-gray-50 {
-  background-color: #121212 !important;
-}
-
-/* Dashboard - Force Light Theme */
-html.force-light {
-  color-scheme: light !important;
-}
-
-.force-light,
-.force-light .bg-zinc-800 {
-  background-color: white !important;
-}
-
-.force-light .text-gray-100,
-.force-light .text-gray-200 {
-  color: #1f2937 !important;
-}
-
-.force-light .text-blue-500 {
-  color: #2563eb !important;
-}
-
-.force-light .bg-zinc-900,
-.force-light .bg-zinc-800 {
-  background-color: white !important;
-}
-
-.force-light .border-zinc-700 {
-  border-color: #e5e7eb !important;
+.dark .testbank-create .text-gray-800,
+.dark .testbank-create .preview-content .text-gray-800 {
+  color: #ffffff !important;
 }

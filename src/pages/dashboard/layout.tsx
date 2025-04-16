@@ -1,6 +1,5 @@
 import AdminPanelLayout from "@/components/admin-panel/admin-panel-layout";
 import { Outlet, useLocation } from "react-router-dom";
-import { DashboardThemeProvider } from "@/components/providers/dashboard-theme-provider";
 
 export default function DashboardLayout() {
   const location = useLocation();
@@ -16,10 +15,8 @@ export default function DashboardLayout() {
   ].includes(location.pathname);
   
   return (
-    <DashboardThemeProvider>
-      <AdminPanelLayout showSidebar={showSidebar}>
-        <Outlet />
-      </AdminPanelLayout>
-    </DashboardThemeProvider>
+    <AdminPanelLayout showSidebar={showSidebar}>
+      <Outlet />
+    </AdminPanelLayout>
   );
 } 

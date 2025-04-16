@@ -24,14 +24,14 @@ export default function CreateTestPage() {
   };
 
   return (
-    <div className="h-screen w-full bg-white flex flex-col">
+    <div className="h-screen w-full bg-white dark:bg-zinc-900 flex flex-col testbank-create">
       {/* Fixed Header */}
-      <header className="border-b shadow-sm px-6 py-3 bg-white flex items-center justify-between sticky top-0 z-10">
+      <header className="border-b shadow-sm px-6 py-3 bg-white dark:bg-zinc-800 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-4 flex-1">
           <Button 
             variant="outline" 
             size="sm" 
-            className="gap-1 bg-gray-700 text-white hover:bg-gray-800 hover:text-white"
+            className="gap-1 bg-black text-white hover:bg-gray-800 hover:text-white dark:bg-zinc-700"
             onClick={() => navigate("/testbank")}
           >
             <ArrowLeft className="h-4 w-4" />
@@ -44,7 +44,7 @@ export default function CreateTestPage() {
               value={testTitle}
               onChange={(e) => setTestTitle(e.target.value)}
               placeholder="Enter test title..."
-              className="h-9 border bg-gray-50 text-gray-900 focus-visible:ring-0 focus-visible:ring-offset-0"
+              className="h-9 border bg-gray-50 dark:bg-zinc-700 text-gray-900 dark:text-white focus-visible:ring-0 focus-visible:ring-offset-0"
             />
           </div>
         </div>
@@ -69,18 +69,18 @@ export default function CreateTestPage() {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Preview Pane */}
-        <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-50">
-          <div className="p-3 border-b font-medium text-sm text-gray-700 bg-gray-100">Preview</div>
+        <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-50 dark:bg-zinc-800">
+          <div className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-gray-100 dark:bg-zinc-700">Preview</div>
           <div className="flex-1 overflow-auto p-5">
-            <div className="prose prose-gray prose-img:rounded max-w-none text-gray-800">
+            <div className="prose prose-gray dark:prose-invert prose-img:rounded max-w-none text-gray-800 dark:!text-white preview-content">
               {editorContent ? (
                 typeof editorContent === "string" ? (
-                  <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+                  <div className="dark:!text-white" dangerouslySetInnerHTML={{ __html: editorContent }} />
                 ) : (
-                  <div className="text-gray-800">Content will appear here</div>
+                  <div className="text-gray-800 dark:!text-white">Content will appear here</div>
                 )
               ) : (
-                <div className="text-gray-500 italic">
+                <div className="text-gray-500 dark:!text-gray-300 italic">
                   Your formatted test content will appear here as you type...
                 </div>
               )}
@@ -89,14 +89,14 @@ export default function CreateTestPage() {
         </div>
         
         {/* Editor Pane */}
-        <div className="w-1/2 border-l overflow-hidden flex flex-col bg-white">
-          <div className="p-3 border-b font-medium text-sm text-gray-700 bg-gray-100">Editor</div>
+        <div className="w-1/2 border-l overflow-hidden flex flex-col bg-white dark:bg-zinc-900">
+          <div className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-gray-100 dark:bg-zinc-700">Editor</div>
           <div className="flex-1 p-0 overflow-hidden">
             <MinimalTiptapMinimal
               value={editorContent}
               onChange={setEditorContent}
-              className="h-full border-0 shadow-none"
-              editorContentClassName="p-5 h-full overflow-auto text-gray-800"
+              className="h-full border-0 shadow-none dark:!text-white [&_.tiptap-toolbar]:dark:bg-zinc-800 [&_.tiptap-toolbar]:dark:!text-white [&_.tiptap-toolbar_button]:dark:!text-white [&_.tiptap-toolbar_svg]:dark:!text-white"
+              editorContentClassName="p-5 h-full overflow-auto text-gray-800 dark:!text-white editor-content"
               placeholder="Enter your test content here..."
               autofocus={true}
               editable={true}
