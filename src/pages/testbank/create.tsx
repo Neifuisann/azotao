@@ -69,8 +69,8 @@ export default function CreateTestPage() {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Preview Pane */}
-        <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-50">
-          <div className="p-3 border-b font-medium text-sm text-gray-700 bg-gray-100">Preview</div>
+        <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-50 dark:bg-zinc-800">
+          <div className="p-3 border-b font-medium text-sm text-gray-700 bg-gray-100 dark:bg-zinc-700 dark:text-white">Preview</div>
           <div className="flex-1 overflow-auto p-5">
             <div className="prose prose-gray dark:prose-invert prose-img:rounded max-w-none text-white preview-content">
               {editorContent ? (

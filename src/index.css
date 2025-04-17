@@ -48,7 +48,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #111111;
+  --background: #555555;
   --foreground: #ffffff;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -252,14 +252,14 @@ body:not(.dashboard-page) .text-gray-700 {
 .testbank-create .preview-content *,
 .testbank-create.dark .preview-content,
 .testbank-create.dark .preview-content * {
-  color: #111111 !important;
+  color: #555555 !important;
 }
 
 .testbank-create .editor-content,
 .testbank-create .editor-content *,
 .testbank-create.dark .editor-content,
 .testbank-create.dark .editor-content * {
-  color: #111111  ;
+  color: #555555  ;
 }
 
 .dark .testbank-create .editor-content,
