@@ -277,3 +277,8 @@ body:not(.dashboard-page) .text-gray-700 {
 body:not(.dashboard-page) .testbank-create .text-gray-800 {
   color: #ffffff !important;
 }
+
+/* Editor syntax highlight */
+.text-blue-600    { @apply text-blue-600 dark:text-blue-400;   }
+.text-purple-600  { @apply text-purple-600 dark:text-purple-300; }
+.text-rose-600    { @apply text-rose-600 dark:text-rose-400;   }

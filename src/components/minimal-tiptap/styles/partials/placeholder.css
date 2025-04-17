@@ -1,7 +1,0 @@
-.minimal-tiptap-editor .ProseMirror .is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  pointer-events: none;
-  float: left;
-  height: 0;
-  color: var(--mt-secondary);
-}

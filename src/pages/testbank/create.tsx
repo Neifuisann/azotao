@@ -3,7 +3,6 @@ import { Content, Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Save } from "lucide-react";
-import { MinimalTiptapMinimal } from "@/components/minimal-tiptap/minimal-tiptap-minimal";
 import { useNavigate } from "react-router-dom";
 
 export default function CreateTestPage() {
@@ -92,17 +91,7 @@ export default function CreateTestPage() {
         <div className="w-1/2 border-l overflow-hidden flex flex-col bg-white dark:bg-zinc-900">
           <div className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-gray-100 dark:bg-zinc-700">Editor</div>
           <div className="flex-1 p-0 overflow-hidden">
-            <MinimalTiptapMinimal
-              value={editorContent}
-              onChange={setEditorContent}
-              className="h-full border-0 shadow-none dark:!text-white [&_.tiptap-toolbar]:dark:bg-zinc-800 [&_.tiptap-toolbar]:dark:!text-white [&_.tiptap-toolbar_button]:dark:!text-white [&_.tiptap-toolbar_svg]:dark:!text-white"
-              editorContentClassName="p-5 h-full overflow-auto text-gray-800 dark:!text-white editor-content"
-              placeholder="Enter your test content here..."
-              autofocus={true}
-              editable={true}
-              output="html"
-              showImageButton={true}
-            />
+
           </div>
         </div>
       </div>
