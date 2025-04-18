@@ -24,6 +24,91 @@ import 'katex/dist/katex.min.css';
 // [CHANGED] Import the Formula Plugin and its types
 import { FormulaPlugin, EditFormulaMeta } from '@/components/tiptap/FormulaPlugin';
 
+// [ADDED] Import Tiptap ProseMirror types for custom plugin
+import { Plugin, PluginKey, TextSelection, EditorState } from 'prosemirror-state';
+import { Decoration, DecorationSet } from 'prosemirror-view';
+import { Extension } from '@tiptap/core';
+
+// Define the key for the plugin
+const highlightPluginKey = new PluginKey<DecorationSet>('highlightOccurrence');
+
+// [ADDED] Custom Tiptap Plugin for Highlighting Occurrences
+// --- Wrap ProseMirror Plugin in Tiptap Extension ---
+const HighlightOccurrenceExtension = Extension.create<{
+  // No options needed for this extension
+}>({
+  name: 'highlightOccurrence',
+
+  addProseMirrorPlugins(): Plugin[] { // Type the return array
+    return [
+      new Plugin({
+        key: highlightPluginKey, // Use the defined key
+
+        state: {
+          init(): DecorationSet {
+            return DecorationSet.empty;
+          },
+          apply(tr, oldSet: DecorationSet): DecorationSet { // Type the state
+            // No changes, return old decorations
+            if (!tr.docChanged && !tr.selectionSet) {
+              return oldSet;
+            }
+
+            const { selection } = tr;
+            // Only proceed if it's a TextSelection and not empty
+            if (!(selection instanceof TextSelection) || selection.empty) {
+              return DecorationSet.empty; // Clear decorations if selection is not text or empty
+            }
+
+            const selectedText = tr.doc.textBetween(selection.from, selection.to).trim();
+            // Only highlight if selected text is reasonably long (e.g., 3+ chars)
+            if (selectedText.length < 2) {
+              return DecorationSet.empty; // Clear decorations for short selections
+            }
+
+            const decorations: Decoration[] = [];
+            const highlightClass = 'occurrence-highlight'; // CSS class for styling
+
+            // Iterate through the document to find occurrences
+            tr.doc.descendants((node, pos) => {
+              if (!node.isText) {
+                return true; // Continue descending if not a text node
+              }
+
+              let index = 0;
+              const textContent = node.textContent;
+              while ((index = textContent.indexOf(selectedText, index)) !== -1) {
+                const from = pos + index;
+                const to = from + selectedText.length;
+
+                // Check if this occurrence overlaps with the current selection
+                const overlapsWithSelection = selection.from < to && selection.to > from;
+
+                // Add decoration only if it does NOT overlap with the main selection
+                if (!overlapsWithSelection) {
+                  decorations.push(Decoration.inline(from, to, { class: highlightClass }));
+                }
+
+                index += selectedText.length; // Move past the found occurrence
+              }
+              return false; // Don't descend further into text nodes
+            });
+
+            return DecorationSet.create(tr.doc, decorations);
+          },
+        },
+
+        props: {
+          decorations(state: EditorState): DecorationSet | null | undefined { // Type state and return
+            // Correct way to access plugin state using the key
+            return highlightPluginKey.getState(state);
+          },
+        },
+      })
+    ];
+  },
+});
+
 // Some basic styles for your preview, etc. 
 // (Kept as in your original code.)
 const highlightStyles: React.CSSProperties = {
@@ -81,7 +166,9 @@ export default function CreateTestPage() {
       // [CHANGED] Use FormulaPlugin and pass the onEdit callback
       FormulaPlugin.configure({
         onEdit: handleEditFormula,
-      })
+      }),
+      // [ADDED] Add the custom highlight extension
+      HighlightOccurrenceExtension,
     ],
     editorProps: {
       attributes: {
@@ -254,6 +341,37 @@ export default function CreateTestPage() {
     [] /* dependencies */
   );
 
+  // [ADDED] Function to handle focusing the editor on a specific question
+  const handleFocusQuestion = useCallback((questionIndex: number) => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    let currentQuestionIndex = -1;
+    let targetPos: number | null = null;
+
+    // Iterate through the document nodes to find the start of the target question
+    editor.state.doc.descendants((node, pos) => {
+      if (node.type.name === 'paragraph') {
+        // Check if this paragraph is a question heading
+        if (node.textContent.trim().match(/^Question\s+\d+:/i)) {
+          currentQuestionIndex++;
+          // If this is the question we're looking for, store its starting position
+          if (currentQuestionIndex === questionIndex) {
+            targetPos = pos + 1; // Position inside the <p> tag
+            return false; // Stop iteration
+          }
+        }
+      }
+      // Continue iteration if the target hasn't been found
+      return targetPos === null;
+    });
+
+    // If we found the position, set the editor focus and selection
+    if (targetPos !== null) {
+      editor.chain().focus().setTextSelection(targetPos).run();
+    }
+  }, [editorRef]); // Dependency on editorRef ensures the correct editor instance is used
+
   // [ADDED] Function to handle closing the modal and resetting edit state
   const handleCloseFormulaModal = () => {
     setShowFormulaModal(false);
@@ -321,6 +439,7 @@ export default function CreateTestPage() {
                   onToggleStar={(choiceIdx, willBeStarred) => {
                     toggleStarForChoice(qIdx, choiceIdx, willBeStarred);
                   }}
+                  onFocusRequest={handleFocusQuestion}
                 />
               ))
             ) : (
@@ -401,6 +520,13 @@ export default function CreateTestPage() {
             }
             .dark ::-webkit-scrollbar-thumb:hover {
               background: #71717a; /* bg-zinc-500 */
+            }
+            
+            /* [ADDED] Style for occurrence highlighting */
+            .occurrence-highlight {
+              background-color: rgba(173, 216, 230, 0.5); /* Light blue with some transparency */
+              border-radius: 2px;
+              box-shadow: 0 0 0 1px rgba(173, 216, 230, 0.7); /* Subtle border */
             }
           `}</style>
           <div className="flex-1 p-2 overflow-auto" style={{ minHeight: "400px" }}>

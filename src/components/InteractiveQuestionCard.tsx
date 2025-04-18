@@ -77,6 +77,7 @@ type Props = {
   rawLines: string[]          // the plain lines for ONE question block
   onToggleStar: (idx: number, starred: boolean) => void // callback to mutate the editor
   questionIndex: number       // 0‑based, for the header
+  onFocusRequest: (questionIndex: number) => void; // [ADDED] Callback to request focus
 }
 
 /**
@@ -87,6 +88,7 @@ export default function InteractiveQuestionCard({
   rawLines,
   onToggleStar,
   questionIndex,
+  onFocusRequest, // [ADDED]
 }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [hoverRow, setHoverRow] = useState<number | null>(null);
@@ -130,7 +132,12 @@ export default function InteractiveQuestionCard({
 
   /* ---------- Render ---------- */
   return (
-    <div className="border rounded-lg p-3 mb-4 bg-white dark:bg-zinc-800" style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}>
+    <div 
+      className="border rounded-lg p-3 mb-4 bg-white dark:bg-zinc-800 cursor-pointer hover:shadow-md transition-shadow duration-150" 
+      style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}
+      onClick={() => onFocusRequest(questionIndex)} // [ADDED] Call focus request on click
+      // Added cursor-pointer, hover effect for better UX
+    >
       {/* Header */}
       <div className="flex items-center gap-2 mb-2 text-sm">
         <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold">
