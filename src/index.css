@@ -48,8 +48,8 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #555555;
-  --foreground: #ffffff;
+  --background: #ffffff;
+  --foreground: #000000;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -234,7 +234,7 @@
 body:not(.dashboard-page) {
   color-scheme: dark;
   background-color: black;
-  color: #fffffff4;
+  color: rgba(0, 0, 0, 0.957);
 }
 
 body:not(.dashboard-page) .text-gray-800 {
@@ -277,7 +277,6 @@ body:not(.dashboard-page) .text-gray-700 {
 body:not(.dashboard-page) .testbank-create .text-gray-800 {
   color: #ffffff !important;
 }
-
 /* Editor syntax highlight */
 .text-blue-600    { @apply text-blue-600 dark:text-blue-400;   }
 .text-purple-600  { @apply text-purple-600 dark:text-purple-300; }
