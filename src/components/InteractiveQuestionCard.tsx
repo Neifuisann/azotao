@@ -1,6 +1,70 @@
 import { useMemo, useState, KeyboardEvent, useEffect, useRef } from "react"
 import { Check, Hash, BookAudio, Tags, MoreVertical } from "lucide-react"
 import clsx from "clsx"
+import katex from 'katex'
+
+// Ensure KaTeX CSS is available (already imported in create.tsx, but good practice)
+// import 'katex/dist/katex.min.css'; 
+
+// Regex to find $...$ syntax, same as in FormulaPlugin
+const katexRegex = /(?<!\\)\$([^\s$][^$]*?)(?<!\\)\$/gs;
+
+// Helper component to render text with inline KaTeX formulas
+const RenderWithKatex = ({ text }: { text: string | null | undefined }) => {
+  if (!text) {
+    return <span className="text-gray-400 dark:text-gray-500">…</span>; // Placeholder for empty text
+  }
+
+  const parts: (string | { type: 'katex'; latex: string })[] = [];
+  let lastIndex = 0;
+  let match;
+  katexRegex.lastIndex = 0; // Reset regex state
+
+  while ((match = katexRegex.exec(text)) !== null) {
+    const index = match.index;
+    const latexContent = match[1];
+
+    // Add text before the match
+    if (index > lastIndex) {
+      parts.push(text.substring(lastIndex, index));
+    }
+    // Add the formula part
+    parts.push({ type: 'katex', latex: latexContent });
+    lastIndex = index + match[0].length;
+  }
+
+  // Add any remaining text after the last match
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (typeof part === 'string') {
+          return <span key={index}>{part}</span>;
+        }
+        // Render KaTeX part
+        return (
+          <span
+            key={index}
+            ref={el => {
+              if (el) {
+                try {
+                  katex.render(part.latex, el, { throwOnError: false, displayMode: false });
+                } catch (e) {
+                  console.error("KaTeX render error:", e);
+                  el.textContent = `$${part.latex}$ (Error)`;
+                  el.style.color = 'red';
+                }
+              }
+            }}
+          />
+        );
+      })}
+    </>
+  );
+};
 
 type Choice = {
   raw: string
@@ -51,24 +115,6 @@ export default function InteractiveQuestionCard({
     return { questionText: q, choices: parsed }
   }, [rawLines]);
 
-  // Auto-resize textarea
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const adjustHeight = () => {
-      textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
-    };
-
-    // Initial adjustment
-    adjustHeight();
-
-    // Adjust on window resize
-    window.addEventListener('resize', adjustHeight);
-    return () => window.removeEventListener('resize', adjustHeight);
-  }, [questionText]); // Re-run when content changes
-
   const handleKey = (e: KeyboardEvent<HTMLDivElement>, idx: number) => {
     if (e.key === " " || e.key === "Enter") {
       e.preventDefault()
@@ -105,16 +151,15 @@ export default function InteractiveQuestionCard({
       </div>
 
       {/* Question text */}
-      <textarea
-        ref={textareaRef}
-        className="w-full resize-none border rounded p-2 text-sm bg-white dark:bg-zinc-900 text-gray-900 dark:text-white"
+      <div
+        className="w-full border rounded p-2 text-sm bg-white dark:bg-zinc-900 text-gray-900 dark:text-white min-h-[40px]"
         style={{ 
           borderColor: 'oklch(0 0 0 / 0.2)',
-          overflow: 'hidden', // Hide scrollbar during auto-resize
+          lineHeight: '1.5'
         }}
-        value={questionText}
-        readOnly
-      />
+      >
+        <RenderWithKatex text={questionText} />
+      </div>
 
       {/* Choices */}
       <div className="mt-2">
@@ -155,7 +200,7 @@ export default function InteractiveQuestionCard({
               )}
               style={{ borderColor: c.starred ? undefined : 'oklch(0 0 0 / 0.2)' }}
             >
-              {c.text || <span className="text-gray-400 dark:text-gray-500">…</span>}
+              <RenderWithKatex text={c.text} />
             </div>
           </div>
         ))}

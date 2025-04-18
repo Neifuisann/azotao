@@ -4,7 +4,7 @@
  * and auto-insert next question heading after finishing D.
  ************************************************************/
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Sigma } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,15 @@ import InteractiveQuestionCard from "@/components/InteractiveQuestionCard";
 import { EditorContent, useEditor, Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { RegexHighlight } from "@/components/tiptap/RegexHighlight";
-import { lineNumbers } from "@tiptap/extension-line-number"; 
+
+// [ADDED] Import the new Formula Modal component
+import FormulaModal from "@/components/tiptap/FormulaModal";
+
+// [ADDED] Import KaTeX CSS for rendering in PREVIEW
+import 'katex/dist/katex.min.css';
+
+// [CHANGED] Import the Formula Plugin and its types
+import { FormulaPlugin, EditFormulaMeta } from '@/components/tiptap/FormulaPlugin';
 
 // Some basic styles for your preview, etc. 
 // (Kept as in your original code.)
@@ -54,11 +62,26 @@ export default function CreateTestPage() {
   const [editorContent, setEditorContent] = useState("");
   const editorRef = useRef<Editor | null>(null);
 
+  // State for the Formula Modal
+  const [showFormulaModal, setShowFormulaModal] = useState(false);
+  // [ADDED] State to track which formula is being edited
+  const [editingFormula, setEditingFormula] = useState<EditFormulaMeta | null>(null);
+
+  // [ADDED] Callback for the FormulaPlugin when a placeholder is double-clicked
+  const handleEditFormula = useCallback((meta: EditFormulaMeta) => {
+    setEditingFormula(meta); // Store the details of the formula being edited
+    setShowFormulaModal(true); // Open the modal
+  }, []); // No dependencies needed
+
   // Initialize Tiptap editor
   const editor = useEditor({
     extensions: [
       StarterKit,
       RegexHighlight,
+      // [CHANGED] Use FormulaPlugin and pass the onEdit callback
+      FormulaPlugin.configure({
+        onEdit: handleEditFormula,
+      })
     ],
     editorProps: {
       attributes: {
@@ -231,7 +254,11 @@ export default function CreateTestPage() {
     [] /* dependencies */
   );
 
-  
+  // [ADDED] Function to handle closing the modal and resetting edit state
+  const handleCloseFormulaModal = () => {
+    setShowFormulaModal(false);
+    setEditingFormula(null); // Clear editing state when closing
+  };
 
   if (!editor) {
     return <div>Loading editor...</div>;
@@ -283,10 +310,7 @@ export default function CreateTestPage() {
       {/* Main Content: Preview (left) & Editor (right) */}
       <div className="flex-1 flex overflow-hidden">
         {/* Preview Pane */}
-        <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-50 dark:bg-zinc-800">
-          <div className="p-3 border-b font-medium text-sm text-gray-700 bg-gray-100 dark:bg-zinc-700 dark:text-white">
-            Preview
-          </div>
+        <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-100 dark:bg-zinc-800">
           <div className="flex-1 overflow-auto p-5">
             {lines.length > 0 ? (
               getQuestionBlocks(lines).map((block, qIdx) => (
@@ -308,9 +332,21 @@ export default function CreateTestPage() {
         </div>
 
         {/* Editor Pane */}
-        <div className="w-1/2 border-l overflow-hidden flex flex-col bg-white dark:bg-zinc-900">
-          <div className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-gray-100 dark:bg-zinc-700">
-            Editor
+        <div className="w-1/2 border-l overflow-hidden flex flex-col bg-white dark:bg-zinc-900" style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}>
+          <div className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-b-100 dark:bg-zinc-700 flex justify-between items-center" style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}>
+            <span></span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="border text-black bg-white dark:text-gray-100 px-2 " style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}
+              onClick={() => {
+                setEditingFormula(null);
+                setShowFormulaModal(true);
+              }}
+            >
+              <Sigma className="h-4 w-4 mr-1" />
+              Insert Formula
+            </Button>
           </div>
           <style>{`
             .ProseMirror p {
@@ -329,10 +365,42 @@ export default function CreateTestPage() {
               content: counter(line);
               position: absolute;
               left: -2.5rem;
-              color: #6b7280;
+              color: #6b7280; /* text-gray-500 */
               font-size: 0.75rem;
               line-height: 1.75;
               user-select: none;
+            }
+
+            /* --- Scrollbar Styles --- */
+            /* Width */
+            ::-webkit-scrollbar {
+              width: 8px;
+            }
+            
+            /* Track */
+            ::-webkit-scrollbar-track {
+              background: #f1f5f9; /* bg-slate-100 */
+              border-radius: 4px;
+            }
+            .dark ::-webkit-scrollbar-track {
+              background: #27272a; /* bg-zinc-800 */
+            }
+            
+            /* Handle */
+            ::-webkit-scrollbar-thumb {
+              background: #94a3b8; /* bg-slate-400 */
+              border-radius: 4px;
+            }
+            .dark ::-webkit-scrollbar-thumb {
+              background: #52525b; /* bg-zinc-600 */
+            }
+            
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+              background:rgb(78, 78, 78); /* bg-slate-500 */
+            }
+            .dark ::-webkit-scrollbar-thumb:hover {
+              background: #71717a; /* bg-zinc-500 */
             }
           `}</style>
           <div className="flex-1 p-2 overflow-auto" style={{ minHeight: "400px" }}>
@@ -340,6 +408,13 @@ export default function CreateTestPage() {
           </div>
         </div>
       </div>
+      {/* FormulaModal at the bottom */}
+      <FormulaModal
+        editor={editor}
+        open={showFormulaModal}
+        onClose={handleCloseFormulaModal}
+        editingInfo={editingFormula}
+      />
     </div>
   );
 }
