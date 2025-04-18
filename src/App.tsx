@@ -10,6 +10,9 @@ import DashboardPage from "./pages/dashboard/index"
 import TestBankPage from "./pages/testbank/index"
 import CreateTestPage from "./pages/testbank/create"
 import TestConfigurationPage from "./pages/testbank/configuration"
+import TestDetailPage from "./pages/testbank/view/[testId]"
+import TakeTestPage from "./pages/testbank/take/[testId]"
+import TestStatisticsPage from "./pages/testbank/stats/[testId]"
 import DocumentMarketPage from "./pages/document-market/index"
 import QuestionBankPage from "./pages/question-bank/index"
 
@@ -121,6 +124,9 @@ function AppContent() {
           <Route path="/testbank" element={<TestBankPage />} />
           <Route path="/testbank/create" element={<CreateTestPage />} />
           <Route path="/testbank/configuration" element={<TestConfigurationPage />} />
+          <Route path="/testbank/view/:testId" element={<TestDetailPage />} />
+          <Route path="/testbank/take/:testId" element={<TakeTestPage />} />
+          <Route path="/testbank/stats/:testId" element={<TestStatisticsPage />} />
           <Route path="/document-market" element={<DocumentMarketPage />} />
           <Route path="/question-bank" element={<QuestionBankPage />} />
         </Route>

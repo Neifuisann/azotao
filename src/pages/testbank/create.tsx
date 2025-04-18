@@ -32,6 +32,17 @@ import { Extension } from '@tiptap/core';
 // Define the key for the plugin
 const highlightPluginKey = new PluginKey<DecorationSet>('highlightOccurrence');
 
+// --- Helper Types for API ---
+type ChoiceData = {
+  text: string;
+  isCorrect: boolean;
+};
+
+type QuestionData = {
+  text: string;
+  choices: ChoiceData[];
+};
+
 // [ADDED] Custom Tiptap Plugin for Highlighting Occurrences
 // --- Wrap ProseMirror Plugin in Tiptap Extension ---
 const HighlightOccurrenceExtension = Extension.create<{
@@ -138,6 +149,49 @@ function getNextChoiceLabel(current: string): string {
   return nextLetter + punctuation;
 }
 
+// [ADDED] Placeholder function to parse editor content for the API
+// TODO: Implement this function based on your Tiptap content structure
+// It should extract questions, their choices, and identify the correct choice.
+// Example assumption: Correct choice line starts with '*' after the label (e.g., "*A. Correct answer")
+const parseEditorContentForAPI = (editor: Editor | null): QuestionData[] => {
+  if (!editor) return [];
+
+  const questions: QuestionData[] = [];
+  let currentQuestion: QuestionData | null = null;
+
+  editor.state.doc.content.forEach(node => {
+    if (node.type.name === 'paragraph' && node.textContent) {
+      const lineText = node.textContent.trim();
+
+      // Match "Question X: ..."
+      const questionMatch = lineText.match(/^Question\s+\d+:\s*(.*)/i);
+      if (questionMatch) {
+        if (currentQuestion) {
+          questions.push(currentQuestion);
+        }
+        currentQuestion = { text: questionMatch[1].trim(), choices: [] };
+        return; // Move to next node
+      }
+
+      // Match choices like "A. ..." or "*A. ..."
+      const choiceMatch = lineText.match(/^(\*?)([A-Z])([.)])\s*(.*)/i);
+      if (choiceMatch && currentQuestion) {
+        const isCorrect = choiceMatch[1] === '*';
+        const choiceText = choiceMatch[4].trim();
+        currentQuestion.choices.push({ text: choiceText, isCorrect });
+      }
+    }
+  });
+
+  // Add the last question if it exists
+  if (currentQuestion) {
+    questions.push(currentQuestion);
+  }
+
+  console.log("Parsed questions for API:", questions); // For debugging
+  return questions;
+};
+
 /************************************************************
  * Our main page
  ************************************************************/
@@ -146,6 +200,7 @@ export default function CreateTestPage() {
   const [testTitle, setTestTitle] = useState("");
   const [editorContent, setEditorContent] = useState("");
   const editorRef = useRef<Editor | null>(null);
+  const [createdTestId, setCreatedTestId] = useState<string | null>(null); // Store created test ID
 
   // State for the Formula Modal
   const [showFormulaModal, setShowFormulaModal] = useState(false);
@@ -235,15 +290,59 @@ export default function CreateTestPage() {
     editorRef.current = editor || null;
   }, [editor]);
 
-  // Handle "Continue" button
+  // Handle "Save as Draft" button
   const [isSaving, setIsSaving] = useState(false);
-  const handleSave = () => {
-    if (!testTitle) return;
+  const handleSaveAsDraft = async () => {
+    if (!testTitle || !editorRef.current) {
+      alert("Please provide a title and some content."); // Basic validation
+      return;
+    }
     setIsSaving(true);
-    setTimeout(() => {
+
+    // 1) Parse content from the editor
+    const questions = parseEditorContentForAPI(editorRef.current);
+
+    if (questions.length === 0) {
+      alert("Could not parse any questions. Ensure they follow the 'Question X:' and 'A.', 'B.', etc. format.");
       setIsSaving(false);
-      navigate("/testbank/configuration");
-    }, 1000);
+      return;
+    }
+
+    // 2) Prepare data for API
+    const newTest = {
+      title: testTitle,
+      status: 'draft', // Explicitly saving as draft
+      questions: questions
+    };
+
+    try {
+      // 3) Send it to /api/tests
+      const response = await fetch('/api/tests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTest),
+      });
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        // 4) Success: Store ID and navigate (or show message)
+        const createdTest = result.data;
+        setCreatedTestId(createdTest.id);
+        console.log("Draft saved successfully! Test ID:", createdTest.id);
+        // Navigate to configuration page, passing the new test ID
+        navigate(`/testbank/configuration?testId=${createdTest.id}`);
+      } else {
+        // 5) Handle API error
+        console.error("Error saving draft:", result.error);
+        alert(`Error saving draft: ${result.error || 'Unknown server error'}`);
+      }
+    } catch (error) {
+      // 6) Handle network error
+      console.error("Network error saving draft:", error);
+      alert("Network error saving draft. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Convert editor's content to plain lines
@@ -413,7 +512,7 @@ export default function CreateTestPage() {
             size="sm"
             className="gap-1 bg-blue-600 hover:bg-blue-700 text-black"
             disabled={!testTitle || isSaving}
-            onClick={handleSave}
+            onClick={handleSaveAsDraft}
           >
             {isSaving ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />

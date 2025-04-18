@@ -179,6 +179,235 @@ app.get('/api/auth/user', async (req, res) => {
   }
 });
 
+// === Test Bank API Endpoints ===
+
+// NEW: Get All Tests (for Test Bank List)
+// GET /api/tests
+app.get('/api/tests', async (req, res) => {
+  try {
+    // TODO: Add filtering later (e.g., by user ID, status)
+    const tests = await prisma.test.findMany({
+      orderBy: { createdAt: 'desc' }, // Show newest first
+      // Select only necessary fields for the list view
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        createdAt: true,
+        _count: { // Efficiently count related questions
+          select: { questions: true }
+        }
+      }
+    });
+    res.json({ success: true, data: tests });
+  } catch (error) {
+    console.error('Error fetching all tests:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// A) Create a Test (Draft)
+// POST /api/tests
+app.post('/api/tests', async (req, res) => {
+  try {
+    const { title, questions, status } = req.body;
+
+    if (!title || !questions || !Array.isArray(questions)) {
+      return res.status(400).json({ success: false, error: 'Missing title or questions array' });
+    }
+
+    const newTest = await prisma.test.create({
+      data: {
+        title,
+        status: status || 'draft',
+        questions: {
+          create: questions.map(q => ({
+            text: q.text,
+            choices: {
+              create: q.choices.map(c => ({
+                text: c.text,
+                isCorrect: c.isCorrect || false
+              }))
+            }
+          }))
+        }
+      },
+      include: { questions: { include: { choices: true } } }
+    });
+
+    res.status(201).json({ success: true, data: newTest });
+  } catch (error) {
+    console.error('Error creating test:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// B) Publish a Test (Update from Draft)
+// PUT /api/tests/:testId/publish
+app.put('/api/tests/:testId/publish', async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    const publishedTest = await prisma.test.update({
+      where: { id: testId },
+      data: { status: 'published' }
+    });
+
+    res.json({ success: true, data: publishedTest });
+  } catch (error) {
+    // Handle potential error if test not found
+    if (error.code === 'P2025') { 
+      return res.status(404).json({ success: false, error: 'Test not found' });
+    }
+    console.error('Error publishing test:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// C) Get a Single Test
+// GET /api/tests/:testId
+app.get('/api/tests/:testId', async (req, res) => {
+  try {
+    const { testId } = req.params;
+    const test = await prisma.test.findUnique({
+      where: { id: testId },
+      include: {
+        questions: {
+          include: {
+            choices: true // We need choices to display the test
+            // Optionally hide correct answer info for students
+            // choices: { select: { id: true, text: true, questionId: true } } 
+          }
+        }
+      }
+    });
+
+    if (!test) {
+      return res.status(404).json({ success: false, error: 'Test not found' });
+    }
+
+    res.json({ success: true, data: test });
+  } catch (error) {
+    console.error('Error fetching test:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// D) Submit Test Answers
+// POST /api/tests/:testId/submit
+app.post('/api/tests/:testId/submit', async (req, res) => {
+  try {
+    const { testId } = req.params;
+    const { userId, answers } = req.body; 
+    // answers expected: [ {questionId, chosenChoiceId}, ... ]
+
+    if (!userId || !answers || !Array.isArray(answers)) {
+      return res.status(400).json({ success: false, error: 'Missing userId or answers array' });
+    }
+
+    const test = await prisma.test.findUnique({
+      where: { id: testId },
+      include: {
+        questions: {
+          include: { choices: true } // Need choices to check correctness
+        }
+      }
+    });
+
+    if (!test) {
+      return res.status(404).json({ success: false, error: 'Test not found' });
+    }
+
+    let correctCount = 0;
+    const detailedAnswers = []; // For storing more info in the Submission
+
+    test.questions.forEach((q) => {
+      const userAnswer = answers.find(a => a.questionId === q.id);
+      const correctChoice = q.choices.find(c => c.isCorrect);
+      let isAnswerCorrect = false;
+
+      if (correctChoice && userAnswer?.chosenChoiceId === correctChoice.id) {
+        correctCount++;
+        isAnswerCorrect = true;
+      }
+      
+      detailedAnswers.push({
+          questionId: q.id,
+          chosenChoiceId: userAnswer?.chosenChoiceId || null,
+          isCorrect: isAnswerCorrect,
+          correctChoiceId: correctChoice?.id || null // Store correct choice ID for review
+      });
+    });
+
+    const totalQuestions = test.questions.length;
+    const score = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+
+    const submission = await prisma.submission.create({
+      data: {
+        userId: userId, // Make sure this ID exists in your User table if you have relations
+        testId: testId,
+        score: score,
+        answers: detailedAnswers, // Store the detailed structure
+      },
+    });
+
+    res.json({
+      success: true,
+      data: {
+        submissionId: submission.id,
+        correctCount,
+        totalQuestions,
+        score,
+        detailedAnswers // Return detailed answers for immediate feedback
+      }
+    });
+  } catch (error) {
+    console.error('Error submitting answers:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// E) Fetch Statistics for a Test
+// GET /api/tests/:testId/statistics
+app.get('/api/tests/:testId/statistics', async (req, res) => {
+  try {
+    const { testId } = req.params;
+    
+    // Ensure the test exists (optional but good practice)
+    const testExists = await prisma.test.findUnique({ where: { id: testId } });
+    if (!testExists) {
+        return res.status(404).json({ success: false, error: 'Test not found' });
+    }
+
+    const submissions = await prisma.submission.findMany({
+      where: { testId },
+      orderBy: { createdAt: 'desc' } // Optional: order by most recent
+    });
+
+    const submissionCount = submissions.length;
+    const averageScore = submissionCount > 0 
+      ? submissions.reduce((sum, s) => sum + s.score, 0) / submissionCount 
+      : 0;
+    
+    // More advanced stats could be calculated here, e.g., per-question success rate
+    // For now, just return basic stats and the list of submissions
+
+    res.json({
+      success: true,
+      data: {
+        submissionCount,
+        averageScore: Math.round(averageScore), // Round the average score
+        submissions // Send all submissions for detailed view on frontend
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching test statistics:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// === End Test Bank API Endpoints ===
+
 // Start server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://localhost:${PORT}`);
@@ -187,6 +416,12 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('- POST /api/auth/signup');
   console.log('- GET /api/auth/user');
   console.log('- GET /api/health');
+  console.log('- GET /api/tests');
+  console.log('- POST /api/tests');
+  console.log('- PUT /api/tests/:testId/publish');
+  console.log('- GET /api/tests/:testId');
+  console.log('- POST /api/tests/:testId/submit');
+  console.log('- GET /api/tests/:testId/statistics');
 });
 
 // Error handling for Prisma
