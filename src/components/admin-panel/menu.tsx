@@ -14,6 +14,7 @@ import {
   TooltipContent,
   TooltipProvider
 } from "@/components/ui/tooltip";
+import { useAuth } from "@/lib/auth-context";
 
 interface MenuProps {
   isOpen: boolean | undefined;
@@ -21,7 +22,9 @@ interface MenuProps {
 
 export function Menu({ isOpen }: MenuProps) {
   const pathname = useLocation().pathname;
-  const menuList = getMenuList(pathname);
+  const { user } = useAuth();
+  
+  const menuList = getMenuList(pathname, user?.role);
 
   const container = {
     hidden: { opacity: 0 },

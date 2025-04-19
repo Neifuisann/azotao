@@ -7,12 +7,14 @@ import { Button } from "./components/ui/button"
 import { Routes, Route, Navigate, useLocation, Link } from "react-router-dom"
 import DashboardLayout from "./pages/dashboard/layout"
 import DashboardPage from "./pages/dashboard/index"
+import DashboardSwitch from "./pages/dashboard/DashboardSwitch"
 import TestBankPage from "./pages/testbank/index"
 import CreateTestPage from "./pages/testbank/create"
 import TestConfigurationPage from "./pages/testbank/configuration"
 import TestDetailPage from "./pages/testbank/view/[testId]"
 import TakeTestPage from "./pages/testbank/take/[testId]"
 import TestStatisticsPage from "./pages/testbank/stats/[testId]"
+import TestPublishSuccessPage from "./pages/testbank/success";
 import DocumentMarketPage from "./pages/document-market/index"
 import QuestionBankPage from "./pages/question-bank/index"
 
@@ -120,10 +122,11 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard" element={<DashboardSwitch />} />
           <Route path="/testbank" element={<TestBankPage />} />
           <Route path="/testbank/create" element={<CreateTestPage />} />
           <Route path="/testbank/configuration" element={<TestConfigurationPage />} />
+          <Route path="/testbank/success" element={<TestPublishSuccessPage />} />
           <Route path="/testbank/view/:testId" element={<TestDetailPage />} />
           <Route path="/testbank/take/:testId" element={<TakeTestPage />} />
           <Route path="/testbank/stats/:testId" element={<TestStatisticsPage />} />

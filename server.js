@@ -78,6 +78,7 @@ app.post('/api/auth/login', async (req, res) => {
         email: true,
         name: true,
         password: true,
+        role: true
       },
     });
 
@@ -185,8 +186,17 @@ app.get('/api/auth/user', async (req, res) => {
 // GET /api/tests
 app.get('/api/tests', async (req, res) => {
   try {
-    // TODO: Add filtering later (e.g., by user ID, status)
+    const { userId } = req.query; // Get userId from query parameters
+
+    if (!userId) {
+      // If no userId is provided, return an error or potentially an empty list,
+      // depending on desired behavior when not logged in or ID is missing.
+      return res.status(400).json({ success: false, error: 'userId query parameter is required' });
+    }
+
+    // Fetch tests specifically for the provided userId
     const tests = await prisma.test.findMany({
+      where: { userId: userId }, // Filter by the provided userId
       orderBy: { createdAt: 'desc' }, // Show newest first
       // Select only necessary fields for the list view
       select: {
@@ -210,16 +220,17 @@ app.get('/api/tests', async (req, res) => {
 // POST /api/tests
 app.post('/api/tests', async (req, res) => {
   try {
-    const { title, questions, status } = req.body;
+    const { title, questions, status, userId } = req.body;
 
-    if (!title || !questions || !Array.isArray(questions)) {
-      return res.status(400).json({ success: false, error: 'Missing title or questions array' });
+    if (!title || !questions || !Array.isArray(questions) || !userId) {
+      return res.status(400).json({ success: false, error: 'Missing title, questions array, or userId' });
     }
 
     const newTest = await prisma.test.create({
       data: {
         title,
         status: status || 'draft',
+        userId: userId,
         questions: {
           create: questions.map(q => ({
             text: q.text,
@@ -247,10 +258,19 @@ app.post('/api/tests', async (req, res) => {
 app.put('/api/tests/:testId/publish', async (req, res) => {
   try {
     const { testId } = req.params;
+    const { title } = req.body; // Extract details from body
+
+    // Basic validation: ensure title is present if provided (optional: add more checks)
+    if (req.body.hasOwnProperty('title') && !title) {
+      return res.status(400).json({ success: false, error: 'Title cannot be empty when provided' });
+    }
 
     const publishedTest = await prisma.test.update({
-      where: { id: testId },
-      data: { status: 'published' }
+      where: { id: testId }, // Use testId from params
+      data: {
+        status: "published",
+        title: title,       // Assume title comes from request body
+      }
     });
 
     res.json({ success: true, data: publishedTest });
@@ -271,12 +291,30 @@ app.get('/api/tests/:testId', async (req, res) => {
     const { testId } = req.params;
     const test = await prisma.test.findUnique({
       where: { id: testId },
-      include: {
-        questions: {
-          include: {
-            choices: true // We need choices to display the test
-            // Optionally hide correct answer info for students
-            // choices: { select: { id: true, text: true, questionId: true } } 
+      // Use select to explicitly include content and other necessary fields
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        grade: true,
+        subject: true,
+        purpose: true,
+        description: true,
+        content: true, // <-- Explicitly select the content field
+        createdAt: true,
+        updatedAt: true,
+        userId: true,
+        questions: { // Keep the include structure within select
+          select: { 
+            id: true,
+            text: true,
+            choices: { // Include choices for each question
+              select: {
+                id: true,
+                text: true,
+                isCorrect: true
+              }
+            }
           }
         }
       }
@@ -286,7 +324,7 @@ app.get('/api/tests/:testId', async (req, res) => {
       return res.status(404).json({ success: false, error: 'Test not found' });
     }
 
-    res.json({ success: true, data: test });
+    res.json({ success: true, data: test }); // Now data.content should exist
   } catch (error) {
     console.error('Error fetching test:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
@@ -403,6 +441,131 @@ app.get('/api/tests/:testId/statistics', async (req, res) => {
   } catch (error) {
     console.error('Error fetching test statistics:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// [NEW] Delete a Test
+// DELETE /api/tests/:testId
+app.delete('/api/tests/:testId', async (req, res) => {
+  try {
+    const { testId } = req.params;
+
+    // Optional: Add authorization check here - ensure the user owns the test
+
+    await prisma.test.delete({
+      where: { id: testId },
+    });
+
+    console.log(`Test deleted successfully: ${testId}`);
+    res.status(200).json({ success: true, message: 'Test deleted successfully' });
+
+  } catch (error) {
+    // Handle specific Prisma error for record not found during delete
+    if (error.code === 'P2025') {
+      return res.status(404).json({ success: false, error: 'Test not found' });
+    }
+    // Handle other potential errors
+    console.error('Error deleting test:', error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// [NEW] Bulk Delete Tests
+// POST /api/tests/bulk-delete 
+app.post('/api/tests/bulk-delete', async (req, res) => {
+  try {
+    const { testIds } = req.body; // Expect an array of test IDs
+
+    if (!testIds || !Array.isArray(testIds) || testIds.length === 0) {
+      return res.status(400).json({ success: false, error: 'Invalid or empty testIds array provided.' });
+    }
+
+    // Optional: Add authorization check here - ensure the user owns all these tests
+
+    const deleteResult = await prisma.test.deleteMany({
+      where: {
+        id: {
+          in: testIds, // Delete tests whose IDs are in the provided array
+        },
+        // You might want to add userId here too for security:
+        // userId: req.user.id // Assuming you have user auth middleware
+      },
+    });
+
+    console.log(`Bulk delete successful. Count: ${deleteResult.count}`);
+    res.status(200).json({ success: true, count: deleteResult.count });
+
+  } catch (error) {
+    // Handle potential errors
+    console.error('Error during bulk delete tests:', error);
+    res.status(500).json({ success: false, error: 'Internal server error during bulk delete.' });
+  }
+});
+
+// NEW: Update an Existing Test (Draft or Published)
+app.put('/api/tests/:testId', async (req, res) => {
+  try {
+    const { testId } = req.params;
+    // Extract potential fields to update from the body
+    const { title, status, questions } = req.body;
+
+    // Basic validation (add more as needed)
+    if (!questions || !Array.isArray(questions)) {
+       return res.status(400).json({ success: false, error: 'Missing or invalid questions array' });
+    }
+    // You might want validation for title and status as well if they are required for updates
+
+    // Use Prisma transaction for atomic update (delete old questions/choices, create new ones)
+    const updatedTest = await prisma.$transaction(async (tx) => {
+       // 1. Delete existing questions and their choices associated with the test
+       await tx.choice.deleteMany({
+           where: { 
+               // Change 'question' to 'Question' to match the Prisma schema relation
+               Question: { 
+                   testId: testId 
+               } 
+           }
+       });
+       await tx.question.deleteMany({
+           where: { testId: testId }
+       });
+
+       // 2. Update the test itself (title, status) and create new questions/choices
+       const testUpdateData = {
+           // Only include title/status if they are actually provided in the request body
+           ...(title !== undefined && { title: title }),
+           ...(status !== undefined && { status: status }),
+           questions: {
+               create: questions.map(q => ({
+                   text: q.text,
+                   choices: {
+                       create: q.choices.map(c => ({
+                           text: c.text,
+                           isCorrect: c.isCorrect || false
+                       }))
+                   }
+               }))
+           }
+       };
+
+       return tx.test.update({
+           where: { id: testId },
+           data: testUpdateData,
+           // Include the updated questions and choices in the response
+           include: { questions: { include: { choices: true } } }
+       });
+    });
+
+    res.json({ success: true, data: updatedTest });
+
+  } catch (error) {
+     // Handle specific Prisma error for record not found during update
+     if (error.code === 'P2025') {
+       return res.status(404).json({ success: false, error: 'Test not found' });
+     }
+     // Handle other potential errors (e.g., validation, database constraint issues)
+     console.error('Error updating test:', error);
+     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 

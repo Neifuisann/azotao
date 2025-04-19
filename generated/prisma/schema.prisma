@@ -11,21 +11,24 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  url       = "postgresql://postgres.skfboquqkcznojtkmpfi:Suicasuicao02@@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+  directUrl = "postgresql://postgres.skfboquqkcznojtkmpfi:Suicasuicao02@@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   password      String?
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          String       @default("student")
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   accounts      Account[]
   sessions      Session[]
+  tests         Test[]
+  submissions   Submission[]
 }
 
 model Account {
@@ -61,4 +64,48 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Test {
+  id          String       @id @default(cuid())
+  title       String
+  status      String       @default("draft")
+  content     String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions   Question[]
+  submissions Submission[]
+}
+
+model Question {
+  id     String @id @default(cuid())
+  testId String // Foreign key to Test
+  text   String
+  // Add other question-specific fields here if needed (e.g., type, points)
+
+  Test    Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  choices Choice[]
+}
+
+model Choice {
+  id         String  @id @default(cuid())
+  questionId String // Foreign key to Question
+  text       String
+  isCorrect  Boolean @default(false)
+
+  Question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id        String   @id @default(cuid())
+  testId    String // Foreign key to Test
+  userId    String // Foreign key to User
+  score     Int // Calculated score (e.g., percentage)
+  answers   Json // Store detailed answers, e.g., [{ questionId, chosenChoiceId, isCorrect, correctChoiceId }]
+  createdAt DateTime @default(now())
+
+  Test Test @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade) // Relation to User who submitted
 }

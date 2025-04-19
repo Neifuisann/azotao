@@ -281,3 +281,13 @@ body:not(.dashboard-page) .testbank-create .text-gray-800 {
 .text-blue-600    { @apply text-blue-600 dark:text-blue-400;   }
 .text-purple-600  { @apply text-purple-600 dark:text-purple-300; }
 .text-rose-600    { @apply text-rose-600 dark:text-rose-400;   }
+
+/* Fix for autofill background color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 100px #E8F0FE inset !important; /* Light yellow background */
+  box-shadow: 0 0 0 100px #E8F0FE inset !important; /* Light yellow background */
+  -webkit-text-fill-color: #000000 !important; /* Black text */
+}

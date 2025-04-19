@@ -4,33 +4,25 @@
  * and auto-insert next question heading after finishing D.
  ************************************************************/
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Save, Sigma } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Save, Sigma, Settings } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import InteractiveQuestionCard from "@/components/InteractiveQuestionCard";
+import { useAuth } from "@/lib/auth-context";
 
 // --- TIPTAP Imports ---
 import { EditorContent, useEditor, Editor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { RegexHighlight } from "@/components/tiptap/RegexHighlight";
-
-// [ADDED] Import the new Formula Modal component
 import FormulaModal from "@/components/tiptap/FormulaModal";
-
-// [ADDED] Import KaTeX CSS for rendering in PREVIEW
+import { FormulaPlugin, EditFormulaMeta } from "@/components/tiptap/FormulaPlugin";
 import 'katex/dist/katex.min.css';
-
-// [CHANGED] Import the Formula Plugin and its types
-import { FormulaPlugin, EditFormulaMeta } from '@/components/tiptap/FormulaPlugin';
-
-// [ADDED] Import Tiptap ProseMirror types for custom plugin
-import { Plugin, PluginKey, TextSelection, EditorState } from 'prosemirror-state';
-import { Decoration, DecorationSet } from 'prosemirror-view';
-import { Extension } from '@tiptap/core';
+import { Plugin, PluginKey, TextSelection, EditorState } from "prosemirror-state";
+import { Decoration, DecorationSet } from "prosemirror-view";
+import { Extension } from "@tiptap/core";
 
 // Define the key for the plugin
-const highlightPluginKey = new PluginKey<DecorationSet>('highlightOccurrence');
+const highlightPluginKey = new PluginKey<DecorationSet>("highlightOccurrence");
 
 // --- Helper Types for API ---
 type ChoiceData = {
@@ -149,80 +141,133 @@ function getNextChoiceLabel(current: string): string {
   return nextLetter + punctuation;
 }
 
-// [ADDED] Placeholder function to parse editor content for the API
-// TODO: Implement this function based on your Tiptap content structure
-// It should extract questions, their choices, and identify the correct choice.
-// Example assumption: Correct choice line starts with '*' after the label (e.g., "*A. Correct answer")
-const parseEditorContentForAPI = (editor: Editor | null): QuestionData[] => {
+/** If the line is "Question 2: something", we detect it here. */
+function isQuestionHeading(line: string) {
+  return /^Question\s+\d+:/i.test(line.trim());
+}
+
+/** If the line is "D." or "D)", we detect it. */
+function isChoiceD(line: string) {
+  return /^D(\.|\))/i.test(line.trim().replace(/^[*]/, "")); // ignoring any leading '*'
+}
+
+/** Parse the editor doc -> question data for the API. */
+function parseEditorContentForAPI(editor: Editor | null) {
   if (!editor) return [];
 
-  const questions: QuestionData[] = [];
-  let currentQuestion: QuestionData | null = null;
+  const questions: any[] = [];
+  let currentQuestion: any = null;
 
-  editor.state.doc.content.forEach(node => {
-    if (node.type.name === 'paragraph' && node.textContent) {
+  editor.state.doc.content.forEach((node) => {
+    if (node.type.name === "paragraph" && node.textContent) {
       const lineText = node.textContent.trim();
 
-      // Match "Question X: ..."
-      const questionMatch = lineText.match(/^Question\s+\d+:\s*(.*)/i);
-      if (questionMatch) {
-        if (currentQuestion) {
-          questions.push(currentQuestion);
-        }
-        currentQuestion = { text: questionMatch[1].trim(), choices: [] };
-        return; // Move to next node
+      // "Question X: ..."
+      const qMatch = lineText.match(/^Question\s+\d+:\s*(.*)/i);
+      if (qMatch) {
+        if (currentQuestion) questions.push(currentQuestion);
+        currentQuestion = { text: qMatch[1].trim(), choices: [] };
+        return;
       }
 
-      // Match choices like "A. ..." or "*A. ..."
-      const choiceMatch = lineText.match(/^(\*?)([A-Z])([.)])\s*(.*)/i);
-      if (choiceMatch && currentQuestion) {
-        const isCorrect = choiceMatch[1] === '*';
-        const choiceText = choiceMatch[4].trim();
+      // "*A. ..." or "A. ..."
+      const cMatch = lineText.match(/^(\*?)([A-Z])([.)])\s*(.*)/i);
+      if (cMatch && currentQuestion) {
+        const isCorrect = cMatch[1] === "*";
+        const choiceText = cMatch[4].trim();
         currentQuestion.choices.push({ text: choiceText, isCorrect });
       }
     }
   });
 
-  // Add the last question if it exists
-  if (currentQuestion) {
-    questions.push(currentQuestion);
-  }
-
-  console.log("Parsed questions for API:", questions); // For debugging
+  if (currentQuestion) questions.push(currentQuestion);
   return questions;
-};
+}
+
+// ---------- Convert plain text lines to array of question blocks
+function getQuestionBlocks(lines: string[]): string[][] {
+  const blocks: string[][] = [];
+  let current: string[] = [];
+  lines.forEach((line) => {
+    if (isQuestionHeading(line)) {
+      if (current.length) blocks.push(current);
+      current = [line];
+    } else {
+      current.push(line);
+    }
+  });
+  if (current.length) blocks.push(current);
+  return blocks;
+}
+
+/** Rebuild lines from testData (fetched from DB) for editing. */
+function buildLinesFromTestData(testData: any) {
+  const lines: string[] = [];
+  if (!testData || !Array.isArray(testData.questions)) return lines;
+
+  testData.questions.forEach((q: any, idx: number) => {
+    const qNum = idx + 1;
+    lines.push(`Question ${qNum}: ${q.text || ""}`);
+    if (Array.isArray(q.choices)) {
+      q.choices.forEach((c: any, cIdx: number) => {
+        const letter = String.fromCharCode(65 + cIdx); // A, B, C...
+        const prefix = c.isCorrect ? `*${letter}.` : `${letter}.`;
+        lines.push(`${prefix} ${c.text || ""}`);
+      });
+    }
+  });
+  return lines;
+}
+
+/** lines -> <p> tags for Tiptap. */
+function linesToHTML(lines: string[]) {
+  return lines
+    .map((line) => `<p>${line.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`).join("");
+}
+
+// [ADDED] Define type for the saved test data returned by the helper
+interface SavedTestData {
+  id: string;
+  title: string;
+  status: string;
+  // Add other fields if needed
+}
+
+/** Utility: read doc paragraphs from tiptap -> array of lines. */
+function getPlainLines(editor: Editor) {
+  const html = editor.getHTML();
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return Array.from(tmp.querySelectorAll("p")).map((p) => p.textContent || "");
+}
 
 /************************************************************
  * Our main page
  ************************************************************/
 export default function CreateTestPage() {
   const navigate = useNavigate();
-  const [testTitle, setTestTitle] = useState("");
-  const [editorContent, setEditorContent] = useState("");
-  const editorRef = useRef<Editor | null>(null);
-  const [createdTestId, setCreatedTestId] = useState<string | null>(null); // Store created test ID
+  const location = useLocation();
+  const { user } = useAuth();
 
-  // State for the Formula Modal
   const [showFormulaModal, setShowFormulaModal] = useState(false);
-  // [ADDED] State to track which formula is being edited
   const [editingFormula, setEditingFormula] = useState<EditFormulaMeta | null>(null);
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [isSavingAndConfiguring, setIsSavingAndConfiguring] = useState(false);
 
-  // [ADDED] Callback for the FormulaPlugin when a placeholder is double-clicked
-  const handleEditFormula = useCallback((meta: EditFormulaMeta) => {
-    setEditingFormula(meta); // Store the details of the formula being edited
-    setShowFormulaModal(true); // Open the modal
-  }, []); // No dependencies needed
+  // The test ID we might be editing (draft or published)
+  const [testId, setTestId] = useState<string | null>(null);
 
-  // Initialize Tiptap editor
+  // Tiptap editor
   const editor = useEditor({
     extensions: [
       StarterKit,
       RegexHighlight,
-      // [CHANGED] Use FormulaPlugin and pass the onEdit callback
       FormulaPlugin.configure({
-        onEdit: handleEditFormula,
+        onEdit: (meta) => {
+          setEditingFormula(meta);
+          setShowFormulaModal(true);
+        },
       }),
-      // [ADDED] Add the custom highlight extension
       HighlightOccurrenceExtension,
     ],
     editorProps: {
@@ -236,38 +281,35 @@ export default function CreateTestPage() {
             const { $from } = state.selection;
             const lineText = $from.nodeBefore?.textContent || "";
             const trimmedLine = lineText.trim();
-          
-            // 1) If line starts with "Question X:"
+
+            // 1) If line starts "Question X:"
             if (/^Question\s+\d+:/i.test(trimmedLine)) {
-              event.preventDefault(); 
+              event.preventDefault();
               editor?.chain().focus().insertContent(`<p>A. </p>`).run();
               return true;
             }
-          
-            // 2) If line starts with "D." => Insert next question in a new paragraph
-            if (/^D(\.|\))/.test(trimmedLine)) {
+            // 2) If line starts "D." => Insert next question
+            if (isChoiceD(trimmedLine)) {
               event.preventDefault();
-          
-              // Find last question number in the doc
-              const docText = view.state.doc.textBetween(0, view.state.doc.content.size, "\n", "\n");
+              // find last question number
+              const docText = view.state.doc.textBetween(
+                0,
+                view.state.doc.content.size,
+                "\n",
+                "\n"
+              );
               const lines = docText.split("\n");
-              let lastQuestionNumber = 1;
-              lines.forEach((line) => {
-                const match = line.match(/^Question\s+(\d+):/i);
-                if (match) {
-                  lastQuestionNumber = parseInt(match[1], 10);
-                }
+              let lastQ = 1;
+              lines.forEach((l) => {
+                const m = l.match(/^Question\s+(\d+):/i);
+                if (m) lastQ = parseInt(m[1], 10);
               });
-              const nextQuestionNum = lastQuestionNumber + 1;
-          
-              // Insert the next question in its own <p>
-              // Add a new line before the next question
-              editor?.chain().focus().insertContent(`<p></p><p>Question ${nextQuestionNum}: </p>`).run();
+              const nextQ = lastQ + 1;
+              editor?.chain().focus().insertContent(`<p></p><p>Question ${nextQ}: </p>`).run();
               return true;
             }
-          
-            // 3) If line is "A." or "B." etc => insert next letter in its own paragraph (optional)
-            const stripped = trimmedLine.replace(/^\*/, ""); 
+            // 3) If line is "A." or "B." => insert next letter
+            const stripped = trimmedLine.replace(/^[*]/, "");
             if (/^[A-Z]\.|^[A-Z]\)/i.test(stripped)) {
               event.preventDefault();
               const nextLabel = getNextChoiceLabel(stripped);
@@ -275,217 +317,213 @@ export default function CreateTestPage() {
               return true;
             }
           }
-          
           return false;
         },
       },
     },
-    content: "",
-    onUpdate: ({ editor }) => {
-      setEditorContent(editor.getHTML());
+    onUpdate: () => {
+      // We'll handle content in getPlainLines when needed
     },
+    content: "", // start empty
   });
 
+  // On mount, check if we have "testId" in the query
   useEffect(() => {
-    editorRef.current = editor || null;
-  }, [editor]);
-
-  // Handle "Save as Draft" button
-  const [isSaving, setIsSaving] = useState(false);
-  const handleSaveAsDraft = async () => {
-    if (!testTitle || !editorRef.current) {
-      alert("Please provide a title and some content."); // Basic validation
-      return;
+    const params = new URLSearchParams(location.search);
+    const existingId = params.get("testId");
+    if (existingId) {
+      setTestId(existingId);
     }
-    setIsSaving(true);
+  }, [location.search]);
 
-    // 1) Parse content from the editor
-    const questions = parseEditorContentForAPI(editorRef.current);
+  // If we do have a testId, fetch that test data + load into tiptap
+  useEffect(() => {
+    if (!testId || !editor) return;
 
-    if (questions.length === 0) {
-      alert("Could not parse any questions. Ensure they follow the 'Question X:' and 'A.', 'B.', etc. format.");
-      setIsSaving(false);
-      return;
-    }
-
-    // 2) Prepare data for API
-    const newTest = {
-      title: testTitle,
-      status: 'draft', // Explicitly saving as draft
-      questions: questions
+    const fetchTest = async () => {
+      try {
+        const response = await fetch(`/api/tests/${testId}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch test. status=${response.status}`);
+        }
+        const result = await response.json();
+        if (!result.success) {
+          throw new Error(result.error || "Unable to load test data");
+        }
+        // Convert the test data to lines + set content in tiptap
+        const lines = buildLinesFromTestData(result.data);
+        const html = linesToHTML(lines);
+        // Set content
+        editor.commands.setContent(html);
+      } catch (err) {
+        console.error("Error loading existing test:", err);
+        alert("Error loading test for editing. Check console for details.");
+      }
     };
 
-    try {
-      // 3) Send it to /api/tests
-      const response = await fetch('/api/tests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newTest),
-      });
-      const result = await response.json();
+    fetchTest();
+  }, [testId, editor]);
 
-      if (response.ok && result.success) {
-        // 4) Success: Store ID and navigate (or show message)
-        const createdTest = result.data;
-        setCreatedTestId(createdTest.id);
-        console.log("Draft saved successfully! Test ID:", createdTest.id);
-        // Navigate to configuration page, passing the new test ID
-        navigate(`/testbank/configuration?testId=${createdTest.id}`);
-      } else {
-        // 5) Handle API error
-        console.error("Error saving draft:", result.error);
-        alert(`Error saving draft: ${result.error || 'Unknown server error'}`);
-      }
-    } catch (error) {
-      // 6) Handle network error
-      console.error("Network error saving draft:", error);
-      alert("Network error saving draft. Please try again.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  // Convert editor's content to plain lines
-  const getPlainLines = (editor: Editor): string[] => {
-    const html = editor.getHTML();
-    const tmp  = document.createElement("div");
-    tmp.innerHTML = html;
-    return Array.from(tmp.querySelectorAll("p")).map(p => p.textContent || "");
-  };
-
-  const getQuestionBlocks = (lines: string[]): string[][] => {
-    const blocks: string[][] = [];
-    let current: string[] = [];
-    lines.forEach(line => {
-      if (/^Question\s+\d+:/i.test(line.trim())) {
-        if (current.length) blocks.push(current);
-        current = [line];
-      } else {
-        current.push(line);
-      }
-    });
-    if (current.length) blocks.push(current);
-    return blocks;
-  };
-
-  /**
-  * Replace one "choice" paragraph with its starred / un‑starred version
-  */
-  const toggleStarForChoice = useCallback(
-    (questionIdx: number, choiceIdx: number, willBeStarred: boolean) => {
-      const editor = editorRef.current;
-      if (!editor) return;
-
-      /* ----------------------------------------------------------
-        1.  Figure out which <p> we need:
-            – Every question block has 1 paragraph for the
-              "Question …:" line, then one paragraph per choice.
-            – So inside that block, the paragraph we need is
-              `choiceIdx + 1`
-        ---------------------------------------------------------- */
-      const targetParagraphIndexWithinBlock = choiceIdx + 1;
-
-      /* ----------------------------------------------------------
-        2.  Walk the doc and stop at the right paragraph
-        ---------------------------------------------------------- */
-      let paragraphCounter = -1;               // counts ALL <p> nodes
-      let startPos: number | null = null;      // start of the target text
-      let endPos:   number | null = null;      // end   of the target text
-      let originalLine = "";
-
-      editor.state.doc.descendants((node, pos) => {
-        if (node.type.name === "paragraph") {
-          paragraphCounter++;
-
-          /* Is this paragraph inside the block we care about?       *
-          * We first skip all blocks before our question.           */
-          const blockStart  = questionIdx === 0 ? 0 :
-                              getQuestionBlocks(getPlainLines(editor))
-                                .slice(0, questionIdx)
-                                .reduce((acc, b) => acc + b.length, 0);
-
-          const globalParagraphIndexNeeded =
-            blockStart + targetParagraphIndexWithinBlock;
-
-          if (paragraphCounter === globalParagraphIndexNeeded) {
-            startPos      = pos + 1;                 // inside the node
-            endPos        = pos + node.nodeSize - 1; // inside the node
-            originalLine  = node.textContent || "";
-            return false; // stop walking
-          }
-        }
-        return true;
-      });
-
-      if (startPos == null || endPos == null) return;
-
-      /* ----------------------------------------------------------
-        3.  Build the updated line, wrap it in <p>…</p>
-        ---------------------------------------------------------- */
-      const updatedLine = willBeStarred
-        ? `*${originalLine.replace(/^\*/, "")}`
-        : originalLine.replace(/^\*/, "");
-
-      const newParagraphHTML = `<p>${updatedLine}</p>`;
-
-      /* ----------------------------------------------------------
-        4.  Replace the old paragraph with the new one
-        ---------------------------------------------------------- */
-      editor
-        .chain()
-        .focus()
-        .insertContentAt({ from: startPos-1, to: endPos }, newParagraphHTML)
-        .run();
-    },
-    [] /* dependencies */
-  );
-
-  // [ADDED] Function to handle focusing the editor on a specific question
-  const handleFocusQuestion = useCallback((questionIndex: number) => {
-    const editor = editorRef.current;
+  // toggle star in preview
+  const toggleStarForChoice = useCallback((questionIdx: number, choiceIdx: number, willBeStarred: boolean) => {
     if (!editor) return;
+    let paragraphCounter = -1;
+    let startPos: number | null = null;
+    let endPos: number | null = null;
+    let originalLine = "";
 
-    let currentQuestionIndex = -1;
+    // figure out which paragraph we need
+    const lines = getPlainLines(editor);
+    const blocks = getQuestionBlocks(lines);
+    // inside block #questionIdx, the paragraph is choiceIdx+1
+    const neededParagraphIndexInBlock = choiceIdx + 1; // 0=question line, so +1
+
+    // count globally
+    editor.state.doc.descendants((node, pos) => {
+      if (node.type.name === "paragraph") {
+        paragraphCounter++;
+        // how many paragraphs from previous blocks?
+        const blockStart = questionIdx === 0 ? 0 : blocks.slice(0, questionIdx).reduce((acc, b) => acc + b.length, 0);
+        const globalParagraphIndexNeeded = blockStart + neededParagraphIndexInBlock;
+
+        if (paragraphCounter === globalParagraphIndexNeeded) {
+          startPos = pos + 1;
+          endPos = pos + node.nodeSize - 1;
+          originalLine = node.textContent || "";
+          return false;
+        }
+      }
+      return true;
+    });
+    if (startPos == null || endPos == null) return;
+
+    const updatedLine = willBeStarred
+      ? `*${originalLine.replace(/^[*]/, "")}`
+      : originalLine.replace(/^[*]/, "");
+    const newParagraphHTML = `<p>${updatedLine}</p>`;
+
+    editor.chain().focus().insertContentAt({ from: startPos - 1, to: endPos }, newParagraphHTML).run();
+  }, [editor]);
+
+  // focusing a question block
+  const focusQuestion = useCallback((qIdx: number) => {
+    if (!editor) return;
+    let curQIndex = -1;
     let targetPos: number | null = null;
 
-    // Iterate through the document nodes to find the start of the target question
     editor.state.doc.descendants((node, pos) => {
-      if (node.type.name === 'paragraph') {
-        // Check if this paragraph is a question heading
-        if (node.textContent.trim().match(/^Question\s+\d+:/i)) {
-          currentQuestionIndex++;
-          // If this is the question we're looking for, store its starting position
-          if (currentQuestionIndex === questionIndex) {
-            targetPos = pos + 1; // Position inside the <p> tag
-            return false; // Stop iteration
+      if (node.type.name === "paragraph") {
+        // detect question lines
+        if (isQuestionHeading(node.textContent || "")) {
+          curQIndex++;
+          if (curQIndex === qIdx) {
+            targetPos = pos + 1;
+            return false;
           }
         }
       }
-      // Continue iteration if the target hasn't been found
-      return targetPos === null;
+      return targetPos === null; // stop when found
     });
 
-    // If we found the position, set the editor focus and selection
     if (targetPos !== null) {
       editor.chain().focus().setTextSelection(targetPos).run();
     }
-  }, [editorRef]); // Dependency on editorRef ensures the correct editor instance is used
+  }, [editor]);
 
-  // [ADDED] Function to handle closing the modal and resetting edit state
-  const handleCloseFormulaModal = () => {
-    setShowFormulaModal(false);
-    setEditingFormula(null); // Clear editing state when closing
+  // [REFACTORED] Core saving logic extracted into a helper function
+  const saveTestContent = async (): Promise<SavedTestData | null> => {
+    if (!user) {
+      alert("You must be logged in to create/edit a test.");
+      return null;
+    }
+    if (!editor) {
+      alert("Editor not ready yet.");
+      return null;
+    }
+
+    const questions = parseEditorContentForAPI(editor);
+    if (questions.length === 0) {
+      alert("No questions found in your text. Please use the 'Question X:' format.");
+      return null;
+    }
+
+    try {
+      let response: Response;
+      if (testId) {
+        // Update existing test
+        response = await fetch(`/api/tests/${testId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            status: "draft",
+            questions,
+          }),
+        });
+      } else {
+        // Create new test
+        response = await fetch("/api/tests", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            title: `Untitled Test - ${new Date().toLocaleString()}`,
+            status: "draft",
+            questions,
+            userId: user.id,
+          }),
+        });
+      }
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        console.log(testId ? "Test updated" : "Draft created", result.data);
+        return result.data as SavedTestData; // Return the saved data (including ID)
+      } else {
+        throw new Error(result.error || (testId ? "Failed to update test" : "Failed to create test"));
+      }
+    } catch (err: any) {
+      console.error("Error saving test content:", err);
+      alert(`Error saving: ${err.message || "Unknown error. Check console for details."}`);
+      return null;
+    }
   };
 
+  // handle saving - just save and go back to test bank
+  const handleSaveAsDraft = async () => {
+    setIsSavingDraft(true); // Set specific loading state
+    try {
+      const savedData = await saveTestContent();
+      if (savedData) {
+        navigate("/testbank"); // Navigate back to the list on success
+      }
+    } finally {
+      setIsSavingDraft(false); // Clear specific loading state
+    }
+  };
+
+  // Handle saving and navigating to configuration
+  const handleSaveAndConfigure = async () => {
+    setIsSavingAndConfiguring(true); // Set specific loading state
+    try {
+      const savedData = await saveTestContent();
+      if (savedData) {
+        // Navigate to configuration page with the test ID
+        navigate(`/testbank/configuration?testId=${savedData.id}`);
+      }
+    } finally {
+      setIsSavingAndConfiguring(false); // Clear specific loading state
+    }
+  };
+
+  // ---------- Render ----------
   if (!editor) {
     return <div>Loading editor...</div>;
   }
-
   const lines = getPlainLines(editor);
 
   return (
     <div className="h-screen w-full bg-white dark:bg-zinc-900 flex flex-col testbank-create">
-      {/* Fixed Header */}
+      {/* Header */}
       <header className="border-b shadow-sm px-6 py-3 bg-white dark:bg-zinc-800 flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-4 flex-1">
           <Button
@@ -497,36 +535,41 @@ export default function CreateTestPage() {
             <ArrowLeft className="h-4 w-4" />
             Back
           </Button>
-          <div className="w-80">
-            <Input
-              id="test-title"
-              value={testTitle}
-              onChange={(e) => setTestTitle(e.target.value)}
-              placeholder="Enter test title..."
-              className="h-9 border bg-gray-50 dark:bg-zinc-700 text-gray-900 dark:text-white"
-            />
-          </div>
         </div>
         <div className="flex items-center gap-3">
           <Button
             size="sm"
-            className="gap-1 bg-blue-600 hover:bg-blue-700 text-black"
-            disabled={!testTitle || isSaving}
+            variant="outline"
+            className="gap-1 bg-gray-200 hover:bg-gray-300"
+            disabled={isSavingDraft || isSavingAndConfiguring || !user}
             onClick={handleSaveAsDraft}
           >
-            {isSaving ? (
+            {isSavingDraft ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary/30 border-t-primary" />
+            ) : (
+              <Save className="h-4 w-4 mr-1" />
+            )}
+            {isSavingDraft ? "Saving..." : "Save Draft"}
+          </Button>
+          <Button
+            size="sm"
+            className="gap-1 bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={isSavingDraft || isSavingAndConfiguring || !user}
+            onClick={handleSaveAndConfigure}
+          >
+            {isSavingAndConfiguring ? (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
             ) : (
-              <Save className="h-4 w-4" />
+              <Settings className="h-4 w-4 mr-1" />
             )}
-            Continue
+            {isSavingAndConfiguring ? "Saving..." : "Save & Configure"}
           </Button>
         </div>
       </header>
 
-      {/* Main Content: Preview (left) & Editor (right) */}
+      {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Preview Pane */}
+        {/* Preview */}
         <div className="w-1/2 p-0 overflow-hidden flex flex-col bg-gray-100 dark:bg-zinc-800">
           <div className="flex-1 overflow-auto p-5">
             {lines.length > 0 ? (
@@ -535,10 +578,10 @@ export default function CreateTestPage() {
                   key={qIdx}
                   rawLines={block}
                   questionIndex={qIdx}
-                  onToggleStar={(choiceIdx, willBeStarred) => {
-                    toggleStarForChoice(qIdx, choiceIdx, willBeStarred);
-                  }}
-                  onFocusRequest={handleFocusQuestion}
+                  onToggleStar={(choiceIdx, newStar) =>
+                    toggleStarForChoice(qIdx, choiceIdx, newStar)
+                  }
+                  onFocusRequest={focusQuestion}
                 />
               ))
             ) : (
@@ -548,15 +591,21 @@ export default function CreateTestPage() {
             )}
           </div>
         </div>
-
-        {/* Editor Pane */}
-        <div className="w-1/2 border-l overflow-hidden flex flex-col bg-white dark:bg-zinc-900" style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}>
-          <div className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-b-100 dark:bg-zinc-700 flex justify-between items-center" style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}>
+        {/* Editor */}
+        <div
+          className="w-1/2 border-l overflow-hidden flex flex-col bg-white dark:bg-zinc-900"
+          style={{ borderColor: "oklch(0 0 0 / 0.2)" }}
+        >
+          <div
+            className="p-3 border-b font-medium text-sm text-gray-700 dark:text-white bg-b-100 dark:bg-zinc-700 flex justify-between items-center"
+            style={{ borderColor: "oklch(0 0 0 / 0.2)" }}
+          >
             <span></span>
             <Button
               variant="ghost"
               size="sm"
-              className="border text-black bg-white dark:text-gray-100 px-2 " style={{ borderColor: 'oklch(0 0 0 / 0.2)' }}
+              className="border text-black bg-white dark:text-gray-100 px-2"
+              style={{ borderColor: "oklch(0 0 0 / 0.2)" }}
               onClick={() => {
                 setEditingFormula(null);
                 setShowFormulaModal(true);
@@ -589,55 +638,29 @@ export default function CreateTestPage() {
               user-select: none;
             }
 
-            /* --- Scrollbar Styles --- */
-            /* Width */
-            ::-webkit-scrollbar {
-              width: 8px;
-            }
-            
-            /* Track */
-            ::-webkit-scrollbar-track {
-              background: #f1f5f9; /* bg-slate-100 */
-              border-radius: 4px;
-            }
-            .dark ::-webkit-scrollbar-track {
-              background: #27272a; /* bg-zinc-800 */
-            }
-            
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-              background: #94a3b8; /* bg-slate-400 */
-              border-radius: 4px;
-            }
-            .dark ::-webkit-scrollbar-thumb {
-              background: #52525b; /* bg-zinc-600 */
-            }
-            
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-              background:rgb(78, 78, 78); /* bg-slate-500 */
-            }
-            .dark ::-webkit-scrollbar-thumb:hover {
-              background: #71717a; /* bg-zinc-500 */
-            }
-            
-            /* [ADDED] Style for occurrence highlighting */
             .occurrence-highlight {
-              background-color: rgba(173, 216, 230, 0.5); /* Light blue with some transparency */
+              background-color: rgba(173, 216, 230, 0.5);
               border-radius: 2px;
-              box-shadow: 0 0 0 1px rgba(173, 216, 230, 0.7); /* Subtle border */
+              box-shadow: 0 0 0 1px rgba(173, 216, 230, 0.7);
             }
           `}</style>
-          <div className="flex-1 p-2 overflow-auto" style={{ minHeight: "400px" }}>
+          <div
+            className="flex-1 p-2 overflow-auto"
+            style={{ minHeight: "400px" }}
+          >
             <EditorContent editor={editor} />
           </div>
         </div>
       </div>
-      {/* FormulaModal at the bottom */}
+
+      {/* Formula Modal */}
       <FormulaModal
         editor={editor}
         open={showFormulaModal}
-        onClose={handleCloseFormulaModal}
+        onClose={() => {
+          setShowFormulaModal(false);
+          setEditingFormula(null);
+        }}
         editingInfo={editingFormula}
       />
     </div>

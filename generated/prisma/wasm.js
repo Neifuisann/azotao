@@ -124,6 +124,7 @@ exports.Prisma.UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   password: 'password',
   image: 'image',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -160,8 +161,14 @@ exports.Prisma.TestScalarFieldEnum = {
   id: 'id',
   title: 'title',
   status: 'status',
+  content: 'content',
+  grade: 'grade',
+  subject: 'subject',
+  purpose: 'purpose',
+  description: 'description',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  userId: 'userId'
 };
 
 exports.Prisma.QuestionScalarFieldEnum = {
@@ -179,8 +186,8 @@ exports.Prisma.ChoiceScalarFieldEnum = {
 
 exports.Prisma.SubmissionScalarFieldEnum = {
   id: 'id',
-  userId: 'userId',
   testId: 'testId',
+  userId: 'userId',
   score: 'score',
   answers: 'answers',
   createdAt: 'createdAt'

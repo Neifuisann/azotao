@@ -3,6 +3,13 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  role: string;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  data?: AuthUser;
+  error?: string;
 }
 
 // Generic fetch helper with error handling
@@ -41,7 +48,7 @@ async function fetchAPI<T>(url: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  login: async (email: string, password: string): Promise<{ success: boolean; data?: AuthUser; error?: string }> => {
+  login: async (email: string, password: string): Promise<LoginResponse> => {
     try {
       const data = await fetchAPI<{ success: boolean; data: AuthUser }>('/api/auth/login', {
         method: 'POST',

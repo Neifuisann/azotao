@@ -1508,11 +1508,15 @@ export namespace Prisma {
   export type UserCountOutputType = {
     accounts: number
     sessions: number
+    tests: number
+    submissions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    tests?: boolean | UserCountOutputTypeCountTestsArgs
+    submissions?: boolean | UserCountOutputTypeCountSubmissionsArgs
   }
 
   // Custom InputTypes
@@ -1538,6 +1542,20 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTestsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TestWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountSubmissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SubmissionWhereInput
   }
 
 
@@ -1633,6 +1651,7 @@ export namespace Prisma {
     emailVerified: Date | null
     password: string | null
     image: string | null
+    role: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1644,6 +1663,7 @@ export namespace Prisma {
     emailVerified: Date | null
     password: string | null
     image: string | null
+    role: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1655,6 +1675,7 @@ export namespace Prisma {
     emailVerified: number
     password: number
     image: number
+    role: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1668,6 +1689,7 @@ export namespace Prisma {
     emailVerified?: true
     password?: true
     image?: true
+    role?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1679,6 +1701,7 @@ export namespace Prisma {
     emailVerified?: true
     password?: true
     image?: true
+    role?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1690,6 +1713,7 @@ export namespace Prisma {
     emailVerified?: true
     password?: true
     image?: true
+    role?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1774,6 +1798,7 @@ export namespace Prisma {
     emailVerified: Date | null
     password: string | null
     image: string | null
+    role: string
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1802,10 +1827,13 @@ export namespace Prisma {
     emailVerified?: boolean
     password?: boolean
     image?: boolean
+    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    tests?: boolean | User$testsArgs<ExtArgs>
+    submissions?: boolean | User$submissionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1816,6 +1844,7 @@ export namespace Prisma {
     emailVerified?: boolean
     password?: boolean
     image?: boolean
+    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1827,6 +1856,7 @@ export namespace Prisma {
     emailVerified?: boolean
     password?: boolean
     image?: boolean
+    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1838,14 +1868,17 @@ export namespace Prisma {
     emailVerified?: boolean
     password?: boolean
     image?: boolean
+    role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "password" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "password" | "image" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    tests?: boolean | User$testsArgs<ExtArgs>
+    submissions?: boolean | User$submissionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1856,6 +1889,8 @@ export namespace Prisma {
     objects: {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
+      tests: Prisma.$TestPayload<ExtArgs>[]
+      submissions: Prisma.$SubmissionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -1864,6 +1899,7 @@ export namespace Prisma {
       emailVerified: Date | null
       password: string | null
       image: string | null
+      role: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -2262,6 +2298,8 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tests<T extends User$testsArgs<ExtArgs> = {}>(args?: Subset<T, User$testsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    submissions<T extends User$submissionsArgs<ExtArgs> = {}>(args?: Subset<T, User$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2297,6 +2335,7 @@ export namespace Prisma {
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly password: FieldRef<"User", 'String'>
     readonly image: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -2732,6 +2771,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.tests
+   */
+  export type User$testsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Test
+     */
+    select?: TestSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Test
+     */
+    omit?: TestOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TestInclude<ExtArgs> | null
+    where?: TestWhereInput
+    orderBy?: TestOrderByWithRelationInput | TestOrderByWithRelationInput[]
+    cursor?: TestWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TestScalarFieldEnum | TestScalarFieldEnum[]
+  }
+
+  /**
+   * User.submissions
+   */
+  export type User$submissionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Submission
+     */
+    select?: SubmissionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Submission
+     */
+    omit?: SubmissionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SubmissionInclude<ExtArgs> | null
+    where?: SubmissionWhereInput
+    orderBy?: SubmissionOrderByWithRelationInput | SubmissionOrderByWithRelationInput[]
+    cursor?: SubmissionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SubmissionScalarFieldEnum | SubmissionScalarFieldEnum[]
   }
 
   /**
@@ -5964,24 +6051,42 @@ export namespace Prisma {
     id: string | null
     title: string | null
     status: string | null
+    content: string | null
+    grade: string | null
+    subject: string | null
+    purpose: string | null
+    description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userId: string | null
   }
 
   export type TestMaxAggregateOutputType = {
     id: string | null
     title: string | null
     status: string | null
+    content: string | null
+    grade: string | null
+    subject: string | null
+    purpose: string | null
+    description: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    userId: string | null
   }
 
   export type TestCountAggregateOutputType = {
     id: number
     title: number
     status: number
+    content: number
+    grade: number
+    subject: number
+    purpose: number
+    description: number
     createdAt: number
     updatedAt: number
+    userId: number
     _all: number
   }
 
@@ -5990,24 +6095,42 @@ export namespace Prisma {
     id?: true
     title?: true
     status?: true
+    content?: true
+    grade?: true
+    subject?: true
+    purpose?: true
+    description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
   }
 
   export type TestMaxAggregateInputType = {
     id?: true
     title?: true
     status?: true
+    content?: true
+    grade?: true
+    subject?: true
+    purpose?: true
+    description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
   }
 
   export type TestCountAggregateInputType = {
     id?: true
     title?: true
     status?: true
+    content?: true
+    grade?: true
+    subject?: true
+    purpose?: true
+    description?: true
     createdAt?: true
     updatedAt?: true
+    userId?: true
     _all?: true
   }
 
@@ -6087,8 +6210,14 @@ export namespace Prisma {
     id: string
     title: string
     status: string
+    content: string | null
+    grade: string | null
+    subject: string | null
+    purpose: string | null
+    description: string | null
     createdAt: Date
     updatedAt: Date
+    userId: string
     _count: TestCountAggregateOutputType | null
     _min: TestMinAggregateOutputType | null
     _max: TestMaxAggregateOutputType | null
@@ -6112,8 +6241,15 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     status?: boolean
+    content?: boolean
+    grade?: boolean
+    subject?: boolean
+    purpose?: boolean
+    description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
     questions?: boolean | Test$questionsArgs<ExtArgs>
     submissions?: boolean | Test$submissionsArgs<ExtArgs>
     _count?: boolean | TestCountOutputTypeDefaultArgs<ExtArgs>
@@ -6123,38 +6259,64 @@ export namespace Prisma {
     id?: boolean
     title?: boolean
     status?: boolean
+    content?: boolean
+    grade?: boolean
+    subject?: boolean
+    purpose?: boolean
+    description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["test"]>
 
   export type TestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     title?: boolean
     status?: boolean
+    content?: boolean
+    grade?: boolean
+    subject?: boolean
+    purpose?: boolean
+    description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["test"]>
 
   export type TestSelectScalar = {
     id?: boolean
     title?: boolean
     status?: boolean
+    content?: boolean
+    grade?: boolean
+    subject?: boolean
+    purpose?: boolean
+    description?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    userId?: boolean
   }
 
-  export type TestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["test"]>
+  export type TestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "content" | "grade" | "subject" | "purpose" | "description" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["test"]>
   export type TestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
     questions?: boolean | Test$questionsArgs<ExtArgs>
     submissions?: boolean | Test$submissionsArgs<ExtArgs>
     _count?: boolean | TestCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type TestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type TestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type TestIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type TestIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
 
   export type $TestPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Test"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs>
       questions: Prisma.$QuestionPayload<ExtArgs>[]
       submissions: Prisma.$SubmissionPayload<ExtArgs>[]
     }
@@ -6162,8 +6324,14 @@ export namespace Prisma {
       id: string
       title: string
       status: string
+      content: string | null
+      grade: string | null
+      subject: string | null
+      purpose: string | null
+      description: string | null
       createdAt: Date
       updatedAt: Date
+      userId: string
     }, ExtArgs["result"]["test"]>
     composites: {}
   }
@@ -6558,6 +6726,7 @@ export namespace Prisma {
    */
   export interface Prisma__TestClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     questions<T extends Test$questionsArgs<ExtArgs> = {}>(args?: Subset<T, Test$questionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     submissions<T extends Test$submissionsArgs<ExtArgs> = {}>(args?: Subset<T, Test$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -6592,8 +6761,14 @@ export namespace Prisma {
     readonly id: FieldRef<"Test", 'String'>
     readonly title: FieldRef<"Test", 'String'>
     readonly status: FieldRef<"Test", 'String'>
+    readonly content: FieldRef<"Test", 'String'>
+    readonly grade: FieldRef<"Test", 'String'>
+    readonly subject: FieldRef<"Test", 'String'>
+    readonly purpose: FieldRef<"Test", 'String'>
+    readonly description: FieldRef<"Test", 'String'>
     readonly createdAt: FieldRef<"Test", 'DateTime'>
     readonly updatedAt: FieldRef<"Test", 'DateTime'>
+    readonly userId: FieldRef<"Test", 'String'>
   }
     
 
@@ -6843,6 +7018,10 @@ export namespace Prisma {
      */
     data: TestCreateManyInput | TestCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TestIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -6913,6 +7092,10 @@ export namespace Prisma {
      * Limit how many Tests to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TestIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -7196,8 +7379,8 @@ export namespace Prisma {
     id?: boolean
     testId?: boolean
     text?: boolean
-    choices?: boolean | Question$choicesArgs<ExtArgs>
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    choices?: boolean | Question$choicesArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["question"]>
 
@@ -7223,8 +7406,8 @@ export namespace Prisma {
 
   export type QuestionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "testId" | "text", ExtArgs["result"]["question"]>
   export type QuestionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    choices?: boolean | Question$choicesArgs<ExtArgs>
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    choices?: boolean | Question$choicesArgs<ExtArgs>
     _count?: boolean | QuestionCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type QuestionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7237,8 +7420,8 @@ export namespace Prisma {
   export type $QuestionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Question"
     objects: {
-      choices: Prisma.$ChoicePayload<ExtArgs>[]
       Test: Prisma.$TestPayload<ExtArgs>
+      choices: Prisma.$ChoicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7638,8 +7821,8 @@ export namespace Prisma {
    */
   export interface Prisma__QuestionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    choices<T extends Question$choicesArgs<ExtArgs> = {}>(args?: Subset<T, Question$choicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     Test<T extends TestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TestDefaultArgs<ExtArgs>>): Prisma__TestClient<$Result.GetResult<Prisma.$TestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    choices<T extends Question$choicesArgs<ExtArgs> = {}>(args?: Subset<T, Question$choicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9177,24 +9360,24 @@ export namespace Prisma {
 
   export type SubmissionMinAggregateOutputType = {
     id: string | null
-    userId: string | null
     testId: string | null
+    userId: string | null
     score: number | null
     createdAt: Date | null
   }
 
   export type SubmissionMaxAggregateOutputType = {
     id: string | null
-    userId: string | null
     testId: string | null
+    userId: string | null
     score: number | null
     createdAt: Date | null
   }
 
   export type SubmissionCountAggregateOutputType = {
     id: number
-    userId: number
     testId: number
+    userId: number
     score: number
     answers: number
     createdAt: number
@@ -9212,24 +9395,24 @@ export namespace Prisma {
 
   export type SubmissionMinAggregateInputType = {
     id?: true
-    userId?: true
     testId?: true
+    userId?: true
     score?: true
     createdAt?: true
   }
 
   export type SubmissionMaxAggregateInputType = {
     id?: true
-    userId?: true
     testId?: true
+    userId?: true
     score?: true
     createdAt?: true
   }
 
   export type SubmissionCountAggregateInputType = {
     id?: true
-    userId?: true
     testId?: true
+    userId?: true
     score?: true
     answers?: true
     createdAt?: true
@@ -9324,8 +9507,8 @@ export namespace Prisma {
 
   export type SubmissionGroupByOutputType = {
     id: string
-    userId: string
     testId: string
+    userId: string
     score: number
     answers: JsonValue
     createdAt: Date
@@ -9352,63 +9535,70 @@ export namespace Prisma {
 
   export type SubmissionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
     testId?: boolean
+    userId?: boolean
     score?: boolean
     answers?: boolean
     createdAt?: boolean
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["submission"]>
 
   export type SubmissionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
     testId?: boolean
+    userId?: boolean
     score?: boolean
     answers?: boolean
     createdAt?: boolean
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["submission"]>
 
   export type SubmissionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    userId?: boolean
     testId?: boolean
+    userId?: boolean
     score?: boolean
     answers?: boolean
     createdAt?: boolean
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["submission"]>
 
   export type SubmissionSelectScalar = {
     id?: boolean
-    userId?: boolean
     testId?: boolean
+    userId?: boolean
     score?: boolean
     answers?: boolean
     createdAt?: boolean
   }
 
-  export type SubmissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "testId" | "score" | "answers" | "createdAt", ExtArgs["result"]["submission"]>
+  export type SubmissionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "testId" | "userId" | "score" | "answers" | "createdAt", ExtArgs["result"]["submission"]>
   export type SubmissionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type SubmissionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type SubmissionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     Test?: boolean | TestDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $SubmissionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Submission"
     objects: {
       Test: Prisma.$TestPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      userId: string
       testId: string
+      userId: string
       score: number
       answers: Prisma.JsonValue
       createdAt: Date
@@ -9807,6 +9997,7 @@ export namespace Prisma {
   export interface Prisma__SubmissionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     Test<T extends TestDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TestDefaultArgs<ExtArgs>>): Prisma__TestClient<$Result.GetResult<Prisma.$TestPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9837,8 +10028,8 @@ export namespace Prisma {
    */
   interface SubmissionFieldRefs {
     readonly id: FieldRef<"Submission", 'String'>
-    readonly userId: FieldRef<"Submission", 'String'>
     readonly testId: FieldRef<"Submission", 'String'>
+    readonly userId: FieldRef<"Submission", 'String'>
     readonly score: FieldRef<"Submission", 'Int'>
     readonly answers: FieldRef<"Submission", 'Json'>
     readonly createdAt: FieldRef<"Submission", 'DateTime'>
@@ -10277,6 +10468,7 @@ export namespace Prisma {
     emailVerified: 'emailVerified',
     password: 'password',
     image: 'image',
+    role: 'role',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -10325,8 +10517,14 @@ export namespace Prisma {
     id: 'id',
     title: 'title',
     status: 'status',
+    content: 'content',
+    grade: 'grade',
+    subject: 'subject',
+    purpose: 'purpose',
+    description: 'description',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    userId: 'userId'
   };
 
   export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof TestScalarFieldEnum]
@@ -10353,8 +10551,8 @@ export namespace Prisma {
 
   export const SubmissionScalarFieldEnum: {
     id: 'id',
-    userId: 'userId',
     testId: 'testId',
+    userId: 'userId',
     score: 'score',
     answers: 'answers',
     createdAt: 'createdAt'
@@ -10498,10 +10696,13 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     password?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
+    role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
+    tests?: TestListRelationFilter
+    submissions?: SubmissionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -10511,10 +10712,13 @@ export namespace Prisma {
     emailVerified?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
+    tests?: TestOrderByRelationAggregateInput
+    submissions?: SubmissionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -10527,10 +10731,13 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     password?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
+    role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
+    tests?: TestListRelationFilter
+    submissions?: SubmissionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -10540,6 +10747,7 @@ export namespace Prisma {
     emailVerified?: SortOrderInput | SortOrder
     password?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -10557,6 +10765,7 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     password?: StringNullableWithAggregatesFilter<"User"> | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
+    role?: StringWithAggregatesFilter<"User"> | string
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -10754,8 +10963,15 @@ export namespace Prisma {
     id?: StringFilter<"Test"> | string
     title?: StringFilter<"Test"> | string
     status?: StringFilter<"Test"> | string
+    content?: StringNullableFilter<"Test"> | string | null
+    grade?: StringNullableFilter<"Test"> | string | null
+    subject?: StringNullableFilter<"Test"> | string | null
+    purpose?: StringNullableFilter<"Test"> | string | null
+    description?: StringNullableFilter<"Test"> | string | null
     createdAt?: DateTimeFilter<"Test"> | Date | string
     updatedAt?: DateTimeFilter<"Test"> | Date | string
+    userId?: StringFilter<"Test"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     questions?: QuestionListRelationFilter
     submissions?: SubmissionListRelationFilter
   }
@@ -10764,8 +10980,15 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    content?: SortOrderInput | SortOrder
+    grade?: SortOrderInput | SortOrder
+    subject?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
+    user?: UserOrderByWithRelationInput
     questions?: QuestionOrderByRelationAggregateInput
     submissions?: SubmissionOrderByRelationAggregateInput
   }
@@ -10777,8 +11000,15 @@ export namespace Prisma {
     NOT?: TestWhereInput | TestWhereInput[]
     title?: StringFilter<"Test"> | string
     status?: StringFilter<"Test"> | string
+    content?: StringNullableFilter<"Test"> | string | null
+    grade?: StringNullableFilter<"Test"> | string | null
+    subject?: StringNullableFilter<"Test"> | string | null
+    purpose?: StringNullableFilter<"Test"> | string | null
+    description?: StringNullableFilter<"Test"> | string | null
     createdAt?: DateTimeFilter<"Test"> | Date | string
     updatedAt?: DateTimeFilter<"Test"> | Date | string
+    userId?: StringFilter<"Test"> | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     questions?: QuestionListRelationFilter
     submissions?: SubmissionListRelationFilter
   }, "id">
@@ -10787,8 +11017,14 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    content?: SortOrderInput | SortOrder
+    grade?: SortOrderInput | SortOrder
+    subject?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
     _count?: TestCountOrderByAggregateInput
     _max?: TestMaxOrderByAggregateInput
     _min?: TestMinOrderByAggregateInput
@@ -10801,8 +11037,14 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Test"> | string
     title?: StringWithAggregatesFilter<"Test"> | string
     status?: StringWithAggregatesFilter<"Test"> | string
+    content?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    grade?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    subject?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    purpose?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    description?: StringNullableWithAggregatesFilter<"Test"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Test"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Test"> | Date | string
+    userId?: StringWithAggregatesFilter<"Test"> | string
   }
 
   export type QuestionWhereInput = {
@@ -10812,16 +11054,16 @@ export namespace Prisma {
     id?: StringFilter<"Question"> | string
     testId?: StringFilter<"Question"> | string
     text?: StringFilter<"Question"> | string
-    choices?: ChoiceListRelationFilter
     Test?: XOR<TestScalarRelationFilter, TestWhereInput>
+    choices?: ChoiceListRelationFilter
   }
 
   export type QuestionOrderByWithRelationInput = {
     id?: SortOrder
     testId?: SortOrder
     text?: SortOrder
-    choices?: ChoiceOrderByRelationAggregateInput
     Test?: TestOrderByWithRelationInput
+    choices?: ChoiceOrderByRelationAggregateInput
   }
 
   export type QuestionWhereUniqueInput = Prisma.AtLeast<{
@@ -10831,8 +11073,8 @@ export namespace Prisma {
     NOT?: QuestionWhereInput | QuestionWhereInput[]
     testId?: StringFilter<"Question"> | string
     text?: StringFilter<"Question"> | string
-    choices?: ChoiceListRelationFilter
     Test?: XOR<TestScalarRelationFilter, TestWhereInput>
+    choices?: ChoiceListRelationFilter
   }, "id">
 
   export type QuestionOrderByWithAggregationInput = {
@@ -10908,22 +11150,24 @@ export namespace Prisma {
     OR?: SubmissionWhereInput[]
     NOT?: SubmissionWhereInput | SubmissionWhereInput[]
     id?: StringFilter<"Submission"> | string
-    userId?: StringFilter<"Submission"> | string
     testId?: StringFilter<"Submission"> | string
+    userId?: StringFilter<"Submission"> | string
     score?: IntFilter<"Submission"> | number
     answers?: JsonFilter<"Submission">
     createdAt?: DateTimeFilter<"Submission"> | Date | string
     Test?: XOR<TestScalarRelationFilter, TestWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type SubmissionOrderByWithRelationInput = {
     id?: SortOrder
-    userId?: SortOrder
     testId?: SortOrder
+    userId?: SortOrder
     score?: SortOrder
     answers?: SortOrder
     createdAt?: SortOrder
     Test?: TestOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type SubmissionWhereUniqueInput = Prisma.AtLeast<{
@@ -10931,18 +11175,19 @@ export namespace Prisma {
     AND?: SubmissionWhereInput | SubmissionWhereInput[]
     OR?: SubmissionWhereInput[]
     NOT?: SubmissionWhereInput | SubmissionWhereInput[]
-    userId?: StringFilter<"Submission"> | string
     testId?: StringFilter<"Submission"> | string
+    userId?: StringFilter<"Submission"> | string
     score?: IntFilter<"Submission"> | number
     answers?: JsonFilter<"Submission">
     createdAt?: DateTimeFilter<"Submission"> | Date | string
     Test?: XOR<TestScalarRelationFilter, TestWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
 
   export type SubmissionOrderByWithAggregationInput = {
     id?: SortOrder
-    userId?: SortOrder
     testId?: SortOrder
+    userId?: SortOrder
     score?: SortOrder
     answers?: SortOrder
     createdAt?: SortOrder
@@ -10958,8 +11203,8 @@ export namespace Prisma {
     OR?: SubmissionScalarWhereWithAggregatesInput[]
     NOT?: SubmissionScalarWhereWithAggregatesInput | SubmissionScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Submission"> | string
-    userId?: StringWithAggregatesFilter<"Submission"> | string
     testId?: StringWithAggregatesFilter<"Submission"> | string
+    userId?: StringWithAggregatesFilter<"Submission"> | string
     score?: IntWithAggregatesFilter<"Submission"> | number
     answers?: JsonWithAggregatesFilter<"Submission">
     createdAt?: DateTimeWithAggregatesFilter<"Submission"> | Date | string
@@ -10972,10 +11217,13 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    tests?: TestCreateNestedManyWithoutUserInput
+    submissions?: SubmissionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -10985,10 +11233,13 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    tests?: TestUncheckedCreateNestedManyWithoutUserInput
+    submissions?: SubmissionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -10998,10 +11249,13 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    tests?: TestUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11011,10 +11265,13 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    tests?: TestUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11024,6 +11281,7 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -11035,6 +11293,7 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11046,6 +11305,7 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11248,8 +11508,14 @@ export namespace Prisma {
     id?: string
     title: string
     status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTestsInput
     questions?: QuestionCreateNestedManyWithoutTestInput
     submissions?: SubmissionCreateNestedManyWithoutTestInput
   }
@@ -11258,8 +11524,14 @@ export namespace Prisma {
     id?: string
     title: string
     status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
     questions?: QuestionUncheckedCreateNestedManyWithoutTestInput
     submissions?: SubmissionUncheckedCreateNestedManyWithoutTestInput
   }
@@ -11268,8 +11540,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTestsNestedInput
     questions?: QuestionUpdateManyWithoutTestNestedInput
     submissions?: SubmissionUpdateManyWithoutTestNestedInput
   }
@@ -11278,8 +11556,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
     questions?: QuestionUncheckedUpdateManyWithoutTestNestedInput
     submissions?: SubmissionUncheckedUpdateManyWithoutTestNestedInput
   }
@@ -11288,14 +11572,25 @@ export namespace Prisma {
     id?: string
     title: string
     status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
   }
 
   export type TestUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11304,15 +11599,21 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type QuestionCreateInput = {
     id?: string
     text: string
-    choices?: ChoiceCreateNestedManyWithoutQuestionInput
     Test: TestCreateNestedOneWithoutQuestionsInput
+    choices?: ChoiceCreateNestedManyWithoutQuestionInput
   }
 
   export type QuestionUncheckedCreateInput = {
@@ -11325,8 +11626,8 @@ export namespace Prisma {
   export type QuestionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     text?: StringFieldUpdateOperationsInput | string
-    choices?: ChoiceUpdateManyWithoutQuestionNestedInput
     Test?: TestUpdateOneRequiredWithoutQuestionsNestedInput
+    choices?: ChoiceUpdateManyWithoutQuestionNestedInput
   }
 
   export type QuestionUncheckedUpdateInput = {
@@ -11403,17 +11704,17 @@ export namespace Prisma {
 
   export type SubmissionCreateInput = {
     id?: string
-    userId: string
     score: number
     answers: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     Test: TestCreateNestedOneWithoutSubmissionsInput
+    user: UserCreateNestedOneWithoutSubmissionsInput
   }
 
   export type SubmissionUncheckedCreateInput = {
     id?: string
-    userId: string
     testId: string
+    userId: string
     score: number
     answers: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -11421,17 +11722,17 @@ export namespace Prisma {
 
   export type SubmissionUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
     score?: IntFieldUpdateOperationsInput | number
     answers?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     Test?: TestUpdateOneRequiredWithoutSubmissionsNestedInput
+    user?: UserUpdateOneRequiredWithoutSubmissionsNestedInput
   }
 
   export type SubmissionUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
     testId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     score?: IntFieldUpdateOperationsInput | number
     answers?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11439,8 +11740,8 @@ export namespace Prisma {
 
   export type SubmissionCreateManyInput = {
     id?: string
-    userId: string
     testId: string
+    userId: string
     score: number
     answers: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
@@ -11448,7 +11749,6 @@ export namespace Prisma {
 
   export type SubmissionUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
     score?: IntFieldUpdateOperationsInput | number
     answers?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11456,8 +11756,8 @@ export namespace Prisma {
 
   export type SubmissionUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
     testId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     score?: IntFieldUpdateOperationsInput | number
     answers?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -11527,6 +11827,18 @@ export namespace Prisma {
     none?: SessionWhereInput
   }
 
+  export type TestListRelationFilter = {
+    every?: TestWhereInput
+    some?: TestWhereInput
+    none?: TestWhereInput
+  }
+
+  export type SubmissionListRelationFilter = {
+    every?: SubmissionWhereInput
+    some?: SubmissionWhereInput
+    none?: SubmissionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -11540,6 +11852,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type TestOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SubmissionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -11547,6 +11867,7 @@ export namespace Prisma {
     emailVerified?: SortOrder
     password?: SortOrder
     image?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11558,6 +11879,7 @@ export namespace Prisma {
     emailVerified?: SortOrder
     password?: SortOrder
     image?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11569,6 +11891,7 @@ export namespace Prisma {
     emailVerified?: SortOrder
     password?: SortOrder
     image?: SortOrder
+    role?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -11777,17 +12100,7 @@ export namespace Prisma {
     none?: QuestionWhereInput
   }
 
-  export type SubmissionListRelationFilter = {
-    every?: SubmissionWhereInput
-    some?: SubmissionWhereInput
-    none?: SubmissionWhereInput
-  }
-
   export type QuestionOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type SubmissionOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11795,35 +12108,53 @@ export namespace Prisma {
     id?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    content?: SortOrder
+    grade?: SortOrder
+    subject?: SortOrder
+    purpose?: SortOrder
+    description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type TestMaxOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    content?: SortOrder
+    grade?: SortOrder
+    subject?: SortOrder
+    purpose?: SortOrder
+    description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
   }
 
   export type TestMinOrderByAggregateInput = {
     id?: SortOrder
     title?: SortOrder
     status?: SortOrder
+    content?: SortOrder
+    grade?: SortOrder
+    subject?: SortOrder
+    purpose?: SortOrder
+    description?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    userId?: SortOrder
+  }
+
+  export type TestScalarRelationFilter = {
+    is?: TestWhereInput
+    isNot?: TestWhereInput
   }
 
   export type ChoiceListRelationFilter = {
     every?: ChoiceWhereInput
     some?: ChoiceWhereInput
     none?: ChoiceWhereInput
-  }
-
-  export type TestScalarRelationFilter = {
-    is?: TestWhereInput
-    isNot?: TestWhereInput
   }
 
   export type ChoiceOrderByRelationAggregateInput = {
@@ -11923,8 +12254,8 @@ export namespace Prisma {
 
   export type SubmissionCountOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
     testId?: SortOrder
+    userId?: SortOrder
     score?: SortOrder
     answers?: SortOrder
     createdAt?: SortOrder
@@ -11936,16 +12267,16 @@ export namespace Prisma {
 
   export type SubmissionMaxOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
     testId?: SortOrder
+    userId?: SortOrder
     score?: SortOrder
     createdAt?: SortOrder
   }
 
   export type SubmissionMinOrderByAggregateInput = {
     id?: SortOrder
-    userId?: SortOrder
     testId?: SortOrder
+    userId?: SortOrder
     score?: SortOrder
     createdAt?: SortOrder
   }
@@ -12010,6 +12341,20 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
+  export type TestCreateNestedManyWithoutUserInput = {
+    create?: XOR<TestCreateWithoutUserInput, TestUncheckedCreateWithoutUserInput> | TestCreateWithoutUserInput[] | TestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestCreateOrConnectWithoutUserInput | TestCreateOrConnectWithoutUserInput[]
+    createMany?: TestCreateManyUserInputEnvelope
+    connect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+  }
+
+  export type SubmissionCreateNestedManyWithoutUserInput = {
+    create?: XOR<SubmissionCreateWithoutUserInput, SubmissionUncheckedCreateWithoutUserInput> | SubmissionCreateWithoutUserInput[] | SubmissionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SubmissionCreateOrConnectWithoutUserInput | SubmissionCreateOrConnectWithoutUserInput[]
+    createMany?: SubmissionCreateManyUserInputEnvelope
+    connect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -12022,6 +12367,20 @@ export namespace Prisma {
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type TestUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<TestCreateWithoutUserInput, TestUncheckedCreateWithoutUserInput> | TestCreateWithoutUserInput[] | TestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestCreateOrConnectWithoutUserInput | TestCreateOrConnectWithoutUserInput[]
+    createMany?: TestCreateManyUserInputEnvelope
+    connect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+  }
+
+  export type SubmissionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<SubmissionCreateWithoutUserInput, SubmissionUncheckedCreateWithoutUserInput> | SubmissionCreateWithoutUserInput[] | SubmissionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SubmissionCreateOrConnectWithoutUserInput | SubmissionCreateOrConnectWithoutUserInput[]
+    createMany?: SubmissionCreateManyUserInputEnvelope
+    connect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -12068,6 +12427,34 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
+  export type TestUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TestCreateWithoutUserInput, TestUncheckedCreateWithoutUserInput> | TestCreateWithoutUserInput[] | TestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestCreateOrConnectWithoutUserInput | TestCreateOrConnectWithoutUserInput[]
+    upsert?: TestUpsertWithWhereUniqueWithoutUserInput | TestUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TestCreateManyUserInputEnvelope
+    set?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    disconnect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    delete?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    connect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    update?: TestUpdateWithWhereUniqueWithoutUserInput | TestUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TestUpdateManyWithWhereWithoutUserInput | TestUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TestScalarWhereInput | TestScalarWhereInput[]
+  }
+
+  export type SubmissionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SubmissionCreateWithoutUserInput, SubmissionUncheckedCreateWithoutUserInput> | SubmissionCreateWithoutUserInput[] | SubmissionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SubmissionCreateOrConnectWithoutUserInput | SubmissionCreateOrConnectWithoutUserInput[]
+    upsert?: SubmissionUpsertWithWhereUniqueWithoutUserInput | SubmissionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SubmissionCreateManyUserInputEnvelope
+    set?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    disconnect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    delete?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    connect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    update?: SubmissionUpdateWithWhereUniqueWithoutUserInput | SubmissionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SubmissionUpdateManyWithWhereWithoutUserInput | SubmissionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -12094,6 +12481,34 @@ export namespace Prisma {
     update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type TestUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<TestCreateWithoutUserInput, TestUncheckedCreateWithoutUserInput> | TestCreateWithoutUserInput[] | TestUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: TestCreateOrConnectWithoutUserInput | TestCreateOrConnectWithoutUserInput[]
+    upsert?: TestUpsertWithWhereUniqueWithoutUserInput | TestUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: TestCreateManyUserInputEnvelope
+    set?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    disconnect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    delete?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    connect?: TestWhereUniqueInput | TestWhereUniqueInput[]
+    update?: TestUpdateWithWhereUniqueWithoutUserInput | TestUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: TestUpdateManyWithWhereWithoutUserInput | TestUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: TestScalarWhereInput | TestScalarWhereInput[]
+  }
+
+  export type SubmissionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<SubmissionCreateWithoutUserInput, SubmissionUncheckedCreateWithoutUserInput> | SubmissionCreateWithoutUserInput[] | SubmissionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: SubmissionCreateOrConnectWithoutUserInput | SubmissionCreateOrConnectWithoutUserInput[]
+    upsert?: SubmissionUpsertWithWhereUniqueWithoutUserInput | SubmissionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: SubmissionCreateManyUserInputEnvelope
+    set?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    disconnect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    delete?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    connect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+    update?: SubmissionUpdateWithWhereUniqueWithoutUserInput | SubmissionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: SubmissionUpdateManyWithWhereWithoutUserInput | SubmissionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -12132,6 +12547,12 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSessionsInput, UserUpdateWithoutSessionsInput>, UserUncheckedUpdateWithoutSessionsInput>
   }
 
+  export type UserCreateNestedOneWithoutTestsInput = {
+    create?: XOR<UserCreateWithoutTestsInput, UserUncheckedCreateWithoutTestsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTestsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type QuestionCreateNestedManyWithoutTestInput = {
     create?: XOR<QuestionCreateWithoutTestInput, QuestionUncheckedCreateWithoutTestInput> | QuestionCreateWithoutTestInput[] | QuestionUncheckedCreateWithoutTestInput[]
     connectOrCreate?: QuestionCreateOrConnectWithoutTestInput | QuestionCreateOrConnectWithoutTestInput[]
@@ -12158,6 +12579,14 @@ export namespace Prisma {
     connectOrCreate?: SubmissionCreateOrConnectWithoutTestInput | SubmissionCreateOrConnectWithoutTestInput[]
     createMany?: SubmissionCreateManyTestInputEnvelope
     connect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutTestsNestedInput = {
+    create?: XOR<UserCreateWithoutTestsInput, UserUncheckedCreateWithoutTestsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTestsInput
+    upsert?: UserUpsertWithoutTestsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTestsInput, UserUpdateWithoutTestsInput>, UserUncheckedUpdateWithoutTestsInput>
   }
 
   export type QuestionUpdateManyWithoutTestNestedInput = {
@@ -12216,6 +12645,12 @@ export namespace Prisma {
     deleteMany?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
   }
 
+  export type TestCreateNestedOneWithoutQuestionsInput = {
+    create?: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
+    connectOrCreate?: TestCreateOrConnectWithoutQuestionsInput
+    connect?: TestWhereUniqueInput
+  }
+
   export type ChoiceCreateNestedManyWithoutQuestionInput = {
     create?: XOR<ChoiceCreateWithoutQuestionInput, ChoiceUncheckedCreateWithoutQuestionInput> | ChoiceCreateWithoutQuestionInput[] | ChoiceUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: ChoiceCreateOrConnectWithoutQuestionInput | ChoiceCreateOrConnectWithoutQuestionInput[]
@@ -12223,17 +12658,19 @@ export namespace Prisma {
     connect?: ChoiceWhereUniqueInput | ChoiceWhereUniqueInput[]
   }
 
-  export type TestCreateNestedOneWithoutQuestionsInput = {
-    create?: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
-    connectOrCreate?: TestCreateOrConnectWithoutQuestionsInput
-    connect?: TestWhereUniqueInput
-  }
-
   export type ChoiceUncheckedCreateNestedManyWithoutQuestionInput = {
     create?: XOR<ChoiceCreateWithoutQuestionInput, ChoiceUncheckedCreateWithoutQuestionInput> | ChoiceCreateWithoutQuestionInput[] | ChoiceUncheckedCreateWithoutQuestionInput[]
     connectOrCreate?: ChoiceCreateOrConnectWithoutQuestionInput | ChoiceCreateOrConnectWithoutQuestionInput[]
     createMany?: ChoiceCreateManyQuestionInputEnvelope
     connect?: ChoiceWhereUniqueInput | ChoiceWhereUniqueInput[]
+  }
+
+  export type TestUpdateOneRequiredWithoutQuestionsNestedInput = {
+    create?: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
+    connectOrCreate?: TestCreateOrConnectWithoutQuestionsInput
+    upsert?: TestUpsertWithoutQuestionsInput
+    connect?: TestWhereUniqueInput
+    update?: XOR<XOR<TestUpdateToOneWithWhereWithoutQuestionsInput, TestUpdateWithoutQuestionsInput>, TestUncheckedUpdateWithoutQuestionsInput>
   }
 
   export type ChoiceUpdateManyWithoutQuestionNestedInput = {
@@ -12248,14 +12685,6 @@ export namespace Prisma {
     update?: ChoiceUpdateWithWhereUniqueWithoutQuestionInput | ChoiceUpdateWithWhereUniqueWithoutQuestionInput[]
     updateMany?: ChoiceUpdateManyWithWhereWithoutQuestionInput | ChoiceUpdateManyWithWhereWithoutQuestionInput[]
     deleteMany?: ChoiceScalarWhereInput | ChoiceScalarWhereInput[]
-  }
-
-  export type TestUpdateOneRequiredWithoutQuestionsNestedInput = {
-    create?: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
-    connectOrCreate?: TestCreateOrConnectWithoutQuestionsInput
-    upsert?: TestUpsertWithoutQuestionsInput
-    connect?: TestWhereUniqueInput
-    update?: XOR<XOR<TestUpdateToOneWithWhereWithoutQuestionsInput, TestUpdateWithoutQuestionsInput>, TestUncheckedUpdateWithoutQuestionsInput>
   }
 
   export type ChoiceUncheckedUpdateManyWithoutQuestionNestedInput = {
@@ -12296,6 +12725,12 @@ export namespace Prisma {
     connect?: TestWhereUniqueInput
   }
 
+  export type UserCreateNestedOneWithoutSubmissionsInput = {
+    create?: XOR<UserCreateWithoutSubmissionsInput, UserUncheckedCreateWithoutSubmissionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubmissionsInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -12310,6 +12745,14 @@ export namespace Prisma {
     upsert?: TestUpsertWithoutSubmissionsInput
     connect?: TestWhereUniqueInput
     update?: XOR<XOR<TestUpdateToOneWithWhereWithoutSubmissionsInput, TestUpdateWithoutSubmissionsInput>, TestUncheckedUpdateWithoutSubmissionsInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutSubmissionsNestedInput = {
+    create?: XOR<UserCreateWithoutSubmissionsInput, UserUncheckedCreateWithoutSubmissionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutSubmissionsInput
+    upsert?: UserUpsertWithoutSubmissionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutSubmissionsInput, UserUpdateWithoutSubmissionsInput>, UserUncheckedUpdateWithoutSubmissionsInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -12596,6 +13039,72 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type TestCreateWithoutUserInput = {
+    id?: string
+    title: string
+    status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questions?: QuestionCreateNestedManyWithoutTestInput
+    submissions?: SubmissionCreateNestedManyWithoutTestInput
+  }
+
+  export type TestUncheckedCreateWithoutUserInput = {
+    id?: string
+    title: string
+    status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    questions?: QuestionUncheckedCreateNestedManyWithoutTestInput
+    submissions?: SubmissionUncheckedCreateNestedManyWithoutTestInput
+  }
+
+  export type TestCreateOrConnectWithoutUserInput = {
+    where: TestWhereUniqueInput
+    create: XOR<TestCreateWithoutUserInput, TestUncheckedCreateWithoutUserInput>
+  }
+
+  export type TestCreateManyUserInputEnvelope = {
+    data: TestCreateManyUserInput | TestCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SubmissionCreateWithoutUserInput = {
+    id?: string
+    score: number
+    answers: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    Test: TestCreateNestedOneWithoutSubmissionsInput
+  }
+
+  export type SubmissionUncheckedCreateWithoutUserInput = {
+    id?: string
+    testId: string
+    score: number
+    answers: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type SubmissionCreateOrConnectWithoutUserInput = {
+    where: SubmissionWhereUniqueInput
+    create: XOR<SubmissionCreateWithoutUserInput, SubmissionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SubmissionCreateManyUserInputEnvelope = {
+    data: SubmissionCreateManyUserInput | SubmissionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
     where: AccountWhereUniqueInput
     update: XOR<AccountUpdateWithoutUserInput, AccountUncheckedUpdateWithoutUserInput>
@@ -12656,6 +13165,67 @@ export namespace Prisma {
     expires?: DateTimeFilter<"Session"> | Date | string
   }
 
+  export type TestUpsertWithWhereUniqueWithoutUserInput = {
+    where: TestWhereUniqueInput
+    update: XOR<TestUpdateWithoutUserInput, TestUncheckedUpdateWithoutUserInput>
+    create: XOR<TestCreateWithoutUserInput, TestUncheckedCreateWithoutUserInput>
+  }
+
+  export type TestUpdateWithWhereUniqueWithoutUserInput = {
+    where: TestWhereUniqueInput
+    data: XOR<TestUpdateWithoutUserInput, TestUncheckedUpdateWithoutUserInput>
+  }
+
+  export type TestUpdateManyWithWhereWithoutUserInput = {
+    where: TestScalarWhereInput
+    data: XOR<TestUpdateManyMutationInput, TestUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type TestScalarWhereInput = {
+    AND?: TestScalarWhereInput | TestScalarWhereInput[]
+    OR?: TestScalarWhereInput[]
+    NOT?: TestScalarWhereInput | TestScalarWhereInput[]
+    id?: StringFilter<"Test"> | string
+    title?: StringFilter<"Test"> | string
+    status?: StringFilter<"Test"> | string
+    content?: StringNullableFilter<"Test"> | string | null
+    grade?: StringNullableFilter<"Test"> | string | null
+    subject?: StringNullableFilter<"Test"> | string | null
+    purpose?: StringNullableFilter<"Test"> | string | null
+    description?: StringNullableFilter<"Test"> | string | null
+    createdAt?: DateTimeFilter<"Test"> | Date | string
+    updatedAt?: DateTimeFilter<"Test"> | Date | string
+    userId?: StringFilter<"Test"> | string
+  }
+
+  export type SubmissionUpsertWithWhereUniqueWithoutUserInput = {
+    where: SubmissionWhereUniqueInput
+    update: XOR<SubmissionUpdateWithoutUserInput, SubmissionUncheckedUpdateWithoutUserInput>
+    create: XOR<SubmissionCreateWithoutUserInput, SubmissionUncheckedCreateWithoutUserInput>
+  }
+
+  export type SubmissionUpdateWithWhereUniqueWithoutUserInput = {
+    where: SubmissionWhereUniqueInput
+    data: XOR<SubmissionUpdateWithoutUserInput, SubmissionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type SubmissionUpdateManyWithWhereWithoutUserInput = {
+    where: SubmissionScalarWhereInput
+    data: XOR<SubmissionUpdateManyMutationInput, SubmissionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type SubmissionScalarWhereInput = {
+    AND?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
+    OR?: SubmissionScalarWhereInput[]
+    NOT?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
+    id?: StringFilter<"Submission"> | string
+    testId?: StringFilter<"Submission"> | string
+    userId?: StringFilter<"Submission"> | string
+    score?: IntFilter<"Submission"> | number
+    answers?: JsonFilter<"Submission">
+    createdAt?: DateTimeFilter<"Submission"> | Date | string
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id?: string
     name?: string | null
@@ -12663,9 +13233,12 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
+    tests?: TestCreateNestedManyWithoutUserInput
+    submissions?: SubmissionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -12675,9 +13248,12 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    tests?: TestUncheckedCreateNestedManyWithoutUserInput
+    submissions?: SubmissionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -12703,9 +13279,12 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    tests?: TestUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -12715,9 +13294,12 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    tests?: TestUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -12727,9 +13309,12 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
+    tests?: TestCreateNestedManyWithoutUserInput
+    submissions?: SubmissionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -12739,9 +13324,12 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     password?: string | null
     image?: string | null
+    role?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    tests?: TestUncheckedCreateNestedManyWithoutUserInput
+    submissions?: SubmissionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -12767,9 +13355,12 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    tests?: TestUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -12779,9 +13370,47 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     password?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    tests?: TestUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutTestsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    submissions?: SubmissionCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutTestsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    submissions?: SubmissionUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutTestsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTestsInput, UserUncheckedCreateWithoutTestsInput>
   }
 
   export type QuestionCreateWithoutTestInput = {
@@ -12808,10 +13437,10 @@ export namespace Prisma {
 
   export type SubmissionCreateWithoutTestInput = {
     id?: string
-    userId: string
     score: number
     answers: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
+    user: UserCreateNestedOneWithoutSubmissionsInput
   }
 
   export type SubmissionUncheckedCreateWithoutTestInput = {
@@ -12830,6 +13459,47 @@ export namespace Prisma {
   export type SubmissionCreateManyTestInputEnvelope = {
     data: SubmissionCreateManyTestInput | SubmissionCreateManyTestInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutTestsInput = {
+    update: XOR<UserUpdateWithoutTestsInput, UserUncheckedUpdateWithoutTestsInput>
+    create: XOR<UserCreateWithoutTestsInput, UserUncheckedCreateWithoutTestsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTestsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTestsInput, UserUncheckedUpdateWithoutTestsInput>
+  }
+
+  export type UserUpdateWithoutTestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTestsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    submissions?: SubmissionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type QuestionUpsertWithWhereUniqueWithoutTestInput = {
@@ -12873,16 +13543,39 @@ export namespace Prisma {
     data: XOR<SubmissionUpdateManyMutationInput, SubmissionUncheckedUpdateManyWithoutTestInput>
   }
 
-  export type SubmissionScalarWhereInput = {
-    AND?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
-    OR?: SubmissionScalarWhereInput[]
-    NOT?: SubmissionScalarWhereInput | SubmissionScalarWhereInput[]
-    id?: StringFilter<"Submission"> | string
-    userId?: StringFilter<"Submission"> | string
-    testId?: StringFilter<"Submission"> | string
-    score?: IntFilter<"Submission"> | number
-    answers?: JsonFilter<"Submission">
-    createdAt?: DateTimeFilter<"Submission"> | Date | string
+  export type TestCreateWithoutQuestionsInput = {
+    id?: string
+    title: string
+    status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTestsInput
+    submissions?: SubmissionCreateNestedManyWithoutTestInput
+  }
+
+  export type TestUncheckedCreateWithoutQuestionsInput = {
+    id?: string
+    title: string
+    status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    userId: string
+    submissions?: SubmissionUncheckedCreateNestedManyWithoutTestInput
+  }
+
+  export type TestCreateOrConnectWithoutQuestionsInput = {
+    where: TestWhereUniqueInput
+    create: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
   }
 
   export type ChoiceCreateWithoutQuestionInput = {
@@ -12907,27 +13600,45 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type TestCreateWithoutQuestionsInput = {
-    id?: string
-    title: string
-    status?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    submissions?: SubmissionCreateNestedManyWithoutTestInput
-  }
-
-  export type TestUncheckedCreateWithoutQuestionsInput = {
-    id?: string
-    title: string
-    status?: string
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    submissions?: SubmissionUncheckedCreateNestedManyWithoutTestInput
-  }
-
-  export type TestCreateOrConnectWithoutQuestionsInput = {
-    where: TestWhereUniqueInput
+  export type TestUpsertWithoutQuestionsInput = {
+    update: XOR<TestUpdateWithoutQuestionsInput, TestUncheckedUpdateWithoutQuestionsInput>
     create: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
+    where?: TestWhereInput
+  }
+
+  export type TestUpdateToOneWithWhereWithoutQuestionsInput = {
+    where?: TestWhereInput
+    data: XOR<TestUpdateWithoutQuestionsInput, TestUncheckedUpdateWithoutQuestionsInput>
+  }
+
+  export type TestUpdateWithoutQuestionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTestsNestedInput
+    submissions?: SubmissionUpdateManyWithoutTestNestedInput
+  }
+
+  export type TestUncheckedUpdateWithoutQuestionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
+    submissions?: SubmissionUncheckedUpdateManyWithoutTestNestedInput
   }
 
   export type ChoiceUpsertWithWhereUniqueWithoutQuestionInput = {
@@ -12954,35 +13665,6 @@ export namespace Prisma {
     questionId?: StringFilter<"Choice"> | string
     text?: StringFilter<"Choice"> | string
     isCorrect?: BoolFilter<"Choice"> | boolean
-  }
-
-  export type TestUpsertWithoutQuestionsInput = {
-    update: XOR<TestUpdateWithoutQuestionsInput, TestUncheckedUpdateWithoutQuestionsInput>
-    create: XOR<TestCreateWithoutQuestionsInput, TestUncheckedCreateWithoutQuestionsInput>
-    where?: TestWhereInput
-  }
-
-  export type TestUpdateToOneWithWhereWithoutQuestionsInput = {
-    where?: TestWhereInput
-    data: XOR<TestUpdateWithoutQuestionsInput, TestUncheckedUpdateWithoutQuestionsInput>
-  }
-
-  export type TestUpdateWithoutQuestionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    submissions?: SubmissionUpdateManyWithoutTestNestedInput
-  }
-
-  export type TestUncheckedUpdateWithoutQuestionsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    submissions?: SubmissionUncheckedUpdateManyWithoutTestNestedInput
   }
 
   export type QuestionCreateWithoutChoicesInput = {
@@ -13029,8 +13711,14 @@ export namespace Prisma {
     id?: string
     title: string
     status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutTestsInput
     questions?: QuestionCreateNestedManyWithoutTestInput
   }
 
@@ -13038,14 +13726,55 @@ export namespace Prisma {
     id?: string
     title: string
     status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    userId: string
     questions?: QuestionUncheckedCreateNestedManyWithoutTestInput
   }
 
   export type TestCreateOrConnectWithoutSubmissionsInput = {
     where: TestWhereUniqueInput
     create: XOR<TestCreateWithoutSubmissionsInput, TestUncheckedCreateWithoutSubmissionsInput>
+  }
+
+  export type UserCreateWithoutSubmissionsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    tests?: TestCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutSubmissionsInput = {
+    id?: string
+    name?: string | null
+    email?: string | null
+    emailVerified?: Date | string | null
+    password?: string | null
+    image?: string | null
+    role?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    tests?: TestUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutSubmissionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutSubmissionsInput, UserUncheckedCreateWithoutSubmissionsInput>
   }
 
   export type TestUpsertWithoutSubmissionsInput = {
@@ -13063,8 +13792,14 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutTestsNestedInput
     questions?: QuestionUpdateManyWithoutTestNestedInput
   }
 
@@ -13072,9 +13807,56 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    userId?: StringFieldUpdateOperationsInput | string
     questions?: QuestionUncheckedUpdateManyWithoutTestNestedInput
+  }
+
+  export type UserUpsertWithoutSubmissionsInput = {
+    update: XOR<UserUpdateWithoutSubmissionsInput, UserUncheckedUpdateWithoutSubmissionsInput>
+    create: XOR<UserCreateWithoutSubmissionsInput, UserUncheckedCreateWithoutSubmissionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutSubmissionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutSubmissionsInput, UserUncheckedUpdateWithoutSubmissionsInput>
+  }
+
+  export type UserUpdateWithoutSubmissionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    tests?: TestUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutSubmissionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    tests?: TestUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type AccountCreateManyUserInput = {
@@ -13095,6 +13877,27 @@ export namespace Prisma {
     id?: string
     sessionToken: string
     expires: Date | string
+  }
+
+  export type TestCreateManyUserInput = {
+    id?: string
+    title: string
+    status?: string
+    content?: string | null
+    grade?: string | null
+    subject?: string | null
+    purpose?: string | null
+    description?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SubmissionCreateManyUserInput = {
+    id?: string
+    testId: string
+    score: number
+    answers: JsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -13157,6 +13960,73 @@ export namespace Prisma {
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type TestUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questions?: QuestionUpdateManyWithoutTestNestedInput
+    submissions?: SubmissionUpdateManyWithoutTestNestedInput
+  }
+
+  export type TestUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    questions?: QuestionUncheckedUpdateManyWithoutTestNestedInput
+    submissions?: SubmissionUncheckedUpdateManyWithoutTestNestedInput
+  }
+
+  export type TestUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    content?: NullableStringFieldUpdateOperationsInput | string | null
+    grade?: NullableStringFieldUpdateOperationsInput | string | null
+    subject?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubmissionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    Test?: TestUpdateOneRequiredWithoutSubmissionsNestedInput
+  }
+
+  export type SubmissionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    testId?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SubmissionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    testId?: StringFieldUpdateOperationsInput | string
+    score?: IntFieldUpdateOperationsInput | number
+    answers?: JsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type QuestionCreateManyTestInput = {
     id?: string
     text: string
@@ -13189,10 +14059,10 @@ export namespace Prisma {
 
   export type SubmissionUpdateWithoutTestInput = {
     id?: StringFieldUpdateOperationsInput | string
-    userId?: StringFieldUpdateOperationsInput | string
     score?: IntFieldUpdateOperationsInput | number
     answers?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutSubmissionsNestedInput
   }
 
   export type SubmissionUncheckedUpdateWithoutTestInput = {

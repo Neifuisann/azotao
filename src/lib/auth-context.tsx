@@ -11,6 +11,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
+  updateUserRole: (newRole: 'student' | 'teacher') => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -47,7 +48,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const expiration = parseInt(expirationTime, 10);
           
           if (!isTokenExpired(expiration)) {
-            setUser(JSON.parse(storedUser));
+            const parsedUser = JSON.parse(storedUser);
+            // Ensure role exists, default to student if missing from old storage
+            if (!parsedUser.role) {
+                parsedUser.role = 'student'; 
+            }
+            setUser(parsedUser);
           } else {
             // Token expired, clear storage
             localStorage.removeItem('currentUser');
@@ -110,10 +116,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     localStorage.removeItem('currentUser');
     localStorage.removeItem('tokenExpiration');
+    localStorage.removeItem('appRole'); // Also remove role preference on logout
+  };
+
+  // Function to update user role in state and localStorage
+  const updateUserRole = (newRole: 'student' | 'teacher') => {
+    if (!user) return;
+    
+    // Update state
+    const updatedUser = { ...user, role: newRole };
+    setUser(updatedUser);
+    
+    // Update localStorage (currentUser includes role)
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    
+    // Also store preferred role separately if needed for faster access on load
+    // localStorage.setItem('appRole', newRole);
+    
+    console.log(`User role updated to: ${newRole}`);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, apiAvailable, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, loading, apiAvailable, login, signup, logout, updateUserRole }}>
       {children}
     </AuthContext.Provider>
   );

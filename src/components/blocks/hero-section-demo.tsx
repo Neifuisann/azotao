@@ -16,8 +16,8 @@ export function HeroSectionDemo() {
           href: "/docs",
         },
       }}
-      title="Build faster with beautiful components"
-      description="Premium UI components built with React and Tailwind CSS. Save time and ship your next project faster with our ready-to-use components."
+      title="Quick Test Platform"
+      description="Create and take tests rapidly."
       actions={[
         {
           text: "Get Started",
