@@ -4,11 +4,12 @@
  * and auto-insert next question heading after finishing D.
  ************************************************************/
 import { useState, useEffect, useCallback, useRef } from "react";
-import { ArrowLeft, Save, Sigma, Settings } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, Save, Sigma, Settings, AlertTriangle } from "lucide-react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import InteractiveQuestionCard from "@/components/InteractiveQuestionCard";
 import { useAuth } from "@/lib/auth-context";
+import { toast } from "sonner"; // Import toast for notifications
 
 // --- TIPTAP Imports ---
 import { EditorContent, useEditor, Editor } from "@tiptap/react";
@@ -342,14 +343,36 @@ export default function CreateTestPage() {
 
     const fetchTest = async () => {
       try {
+        console.log(`Fetching test data for ID: ${testId}`);
         const response = await fetch(`/api/tests/${testId}`);
+        
         if (!response.ok) {
+          if (response.status === 403) {
+            // Handle case where server rejects access
+            console.error("Server denied access to this test");
+            // Display unauthorized UI
+            showUnauthorizedMessage();
+            return;
+          }
           throw new Error(`Failed to fetch test. status=${response.status}`);
         }
+        
         const result = await response.json();
         if (!result.success) {
           throw new Error(result.error || "Unable to load test data");
         }
+
+        console.log("Current User:", user);
+        console.log("Fetched Test Data:", result.data);
+        
+        // Check if user is authorized to edit this test
+        if (user?.id && result.data.userId && result.data.userId !== user.id) {
+          console.error("Authorization failed: User ID does not match test userId");
+          // Display unauthorized UI
+          showUnauthorizedMessage();
+          return;
+        }
+        
         // Convert the test data to lines + set content in tiptap
         const lines = buildLinesFromTestData(result.data);
         const html = linesToHTML(lines);
@@ -362,7 +385,64 @@ export default function CreateTestPage() {
     };
 
     fetchTest();
-  }, [testId, editor]);
+  }, [testId, editor, user]);
+
+  // Add an effect to clean up any overlay on unmount
+  useEffect(() => {
+    return () => {
+      // Cleanup function to remove overlay on unmount
+      const overlay = document.querySelector('.testbank-create > .absolute');
+      if (overlay) {
+        overlay.remove();
+      }
+    };
+  }, []);
+
+  // Function to show unauthorized message
+  const showUnauthorizedMessage = () => {
+    // Create a modal or an overlay with error message
+    const testCreateElement = document.querySelector('.testbank-create');
+    if (testCreateElement) {
+      // Remove any existing overlay first
+      const existingOverlay = testCreateElement.querySelector('.absolute');
+      if (existingOverlay) {
+        existingOverlay.remove();
+      }
+      
+      // Add unauthorized overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'absolute inset-0 flex flex-col items-center justify-center bg-white/95 dark:bg-zinc-900/95 z-50';
+      overlay.id = 'unauthorized-overlay'; // Add ID for easier selection
+      overlay.innerHTML = `
+        <div class="flex flex-col items-center justify-center text-center p-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-500 mb-4">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <h1 class="text-2xl font-bold mb-2 text-red-500">Access Denied</h1>
+          <p class="text-gray-600 dark:text-gray-300 mb-6">
+            You do not have permission to view or edit this test.
+          </p>
+          <a href="/testbank" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-zinc-700 dark:hover:bg-zinc-600 rounded-md">
+            Return to Test Bank
+          </a>
+        </div>
+      `;
+      testCreateElement.appendChild(overlay);
+      
+      // Make the editor read-only
+      if (editor) {
+        editor.setEditable(false);
+      }
+    } else {
+      // Fallback if element not found
+      alert("You don't have permission to edit this test.");
+      setTimeout(() => {
+        window.location.href = '/testbank';
+      }, 500);
+    }
+  };
 
   // toggle star in preview
   const toggleStarForChoice = useCallback((questionIdx: number, choiceIdx: number, willBeStarred: boolean) => {
@@ -439,6 +519,32 @@ export default function CreateTestPage() {
     if (!editor) {
       alert("Editor not ready yet.");
       return null;
+    }
+
+    // If we are editing an existing test, verify ownership
+    if (testId) {
+      try {
+        const checkResponse = await fetch(`/api/tests/${testId}`);
+        if (!checkResponse.ok) {
+          throw new Error(`Failed to verify test ownership. status=${checkResponse.status}`);
+        }
+        
+        const checkResult = await checkResponse.json();
+        if (!checkResult.success || !checkResult.data) {
+          throw new Error("Failed to verify test data");
+        }
+        
+        // Check if user is authorized to edit this test
+        if (checkResult.data.userId !== user.id) {
+          console.error("Save attempt unauthorized: User does not own this test");
+          alert("You don't have permission to modify this test.");
+          return null;
+        }
+      } catch (err) {
+        console.error("Error verifying test ownership:", err);
+        alert("Error verifying test ownership. Save aborted.");
+        return null;
+      }
     }
 
     const questions = parseEditorContentForAPI(editor);

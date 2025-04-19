@@ -3,6 +3,8 @@ import { api, AuthUser } from './api';
 
 // Auth token expiration time (24 hours in seconds)
 const TOKEN_EXPIRATION_TIME = 24 * 60 * 60;
+// Key for storing preferred role
+const PREFERRED_ROLE_KEY = 'preferredRole';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -29,6 +31,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function initialize() {
+      let initialUser: AuthUser | null = null;
+      let preferredRole: string | null = null;
+      
       try {
         // Check API health
         const isApiHealthy = await api.healthCheck();
@@ -41,28 +46,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         // Check for stored session
-        const storedUser = localStorage.getItem('currentUser');
+        const storedUserJson = localStorage.getItem('currentUser');
         const expirationTime = localStorage.getItem('tokenExpiration');
         
-        if (storedUser && expirationTime) {
+        if (storedUserJson && expirationTime) {
           const expiration = parseInt(expirationTime, 10);
           
           if (!isTokenExpired(expiration)) {
-            const parsedUser = JSON.parse(storedUser);
-            // Ensure role exists, default to student if missing from old storage
+            const parsedUser = JSON.parse(storedUserJson);
+            // Ensure role exists, default to student if missing
             if (!parsedUser.role) {
                 parsedUser.role = 'student'; 
             }
-            setUser(parsedUser);
+            initialUser = parsedUser;
           } else {
-            // Token expired, clear storage
+            // Token expired, clear session storage
             localStorage.removeItem('currentUser');
             localStorage.removeItem('tokenExpiration');
           }
         }
+
+        // Check for stored preferred role *after* checking session
+        preferredRole = localStorage.getItem(PREFERRED_ROLE_KEY);
+
+        // Apply preferred role if it exists and differs from initial role
+        if (initialUser && preferredRole && (preferredRole === 'student' || preferredRole === 'teacher') && initialUser.role !== preferredRole) {
+           console.log(`Applying preferred role from localStorage: ${preferredRole}`);
+           initialUser = { ...initialUser, role: preferredRole };
+           // Update currentUser in localStorage as well to reflect preference immediately
+           localStorage.setItem('currentUser', JSON.stringify(initialUser));
+        }
+
+        // Set the final initial user state
+        setUser(initialUser);
+
       } catch (error) {
         console.error('Error initializing auth context:', error);
         setApiAvailable(false);
+        // Clear potentially corrupted storage on error
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('tokenExpiration');
+        localStorage.removeItem(PREFERRED_ROLE_KEY);
       } finally {
         setLoading(false);
       }
@@ -84,12 +108,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       // Set the user in state and localStorage with expiration
-      setUser(result.data);
-      localStorage.setItem('currentUser', JSON.stringify(result.data));
+      const loggedInUser = result.data;
+      setUser(loggedInUser);
+      localStorage.setItem('currentUser', JSON.stringify(loggedInUser));
       
       // Set token expiration (24 hours from now)
       const expirationTime = Math.floor(Date.now() / 1000) + TOKEN_EXPIRATION_TIME;
       localStorage.setItem('tokenExpiration', expirationTime.toString());
+
+      // **Important**: Clear preferred role on login? 
+      // Or let the user manually switch after logging in? 
+      // For now, let's clear it so the role from the server is the default on fresh login.
+      localStorage.removeItem(PREFERRED_ROLE_KEY);
 
       return { success: true };
     } catch (error) {
@@ -116,7 +146,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     localStorage.removeItem('currentUser');
     localStorage.removeItem('tokenExpiration');
-    localStorage.removeItem('appRole'); // Also remove role preference on logout
+    // **Important**: Also remove preferred role on logout
+    localStorage.removeItem(PREFERRED_ROLE_KEY);
+    // Old role preference key (if used previously, remove for consistency)
+    localStorage.removeItem('appRole'); 
   };
 
   // Function to update user role in state and localStorage
@@ -130,10 +163,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Update localStorage (currentUser includes role)
     localStorage.setItem('currentUser', JSON.stringify(updatedUser));
     
-    // Also store preferred role separately if needed for faster access on load
-    // localStorage.setItem('appRole', newRole);
+    // **Save the preferred role to localStorage**
+    localStorage.setItem(PREFERRED_ROLE_KEY, newRole);
     
-    console.log(`User role updated to: ${newRole}`);
+    console.log(`User role updated to: ${newRole} and saved preference.`);
   };
 
   return (

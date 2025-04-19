@@ -168,7 +168,7 @@ export default function TakeTestPage() {
             <CardHeader><CardTitle className="text-red-700">Error</CardTitle></CardHeader>
             <CardContent><p className="text-red-600">{error}</p></CardContent>
             <CardFooter>
-                <Button variant="outline" onClick={() => navigate('/testbank')}><ArrowLeft className="mr-2 h-4 w-4" /> Back to Tests</Button>
+                <Button variant="outline" onClick={() => navigate('/dashboard')}><ArrowLeft className="mr-2 h-4 w-4" /> Back to Tests</Button>
             </CardFooter>
          </Card>
         </div>
@@ -231,7 +231,7 @@ export default function TakeTestPage() {
             })}
           </CardContent>
           <CardFooter className="flex justify-end">
-            <Button onClick={() => navigate('/testbank')}>Back to Test Bank</Button>
+            <Button onClick={() => navigate('/dashboard')}>Back to Main Page</Button>
           </CardFooter>
         </Card>
       </div>

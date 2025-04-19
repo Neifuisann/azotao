@@ -18,7 +18,7 @@ export function ThemeProvider({
        * We do NOT set forcedTheme here, so the user can freely switch.
        */
       attribute="class"
-      defaultTheme="system"
+      defaultTheme="light"
       enableSystem
       disableTransitionOnChange
     >

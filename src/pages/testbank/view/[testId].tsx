@@ -75,7 +75,7 @@ export default function TestDetailPage() {
 
   const handleGoBack = () => {
     // Navigate back to the test bank list or a relevant previous page
-    navigate('/testbank'); 
+    navigate('/dashboard'); 
   };
 
   if (isLoading) {
