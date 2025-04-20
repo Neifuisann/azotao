@@ -6043,94 +6043,204 @@ export namespace Prisma {
 
   export type AggregateTest = {
     _count: TestCountAggregateOutputType | null
+    _avg: TestAvgAggregateOutputType | null
+    _sum: TestSumAggregateOutputType | null
     _min: TestMinAggregateOutputType | null
     _max: TestMaxAggregateOutputType | null
   }
 
+  export type TestAvgAggregateOutputType = {
+    testDuration: number | null
+    submittedTimes: number | null
+    pointToShowAnswer: number | null
+  }
+
+  export type TestSumAggregateOutputType = {
+    testDuration: number | null
+    submittedTimes: number | null
+    pointToShowAnswer: number | null
+  }
+
   export type TestMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     title: string | null
-    status: string | null
-    content: string | null
     grade: string | null
     subject: string | null
     purpose: string | null
     description: string | null
+    configType: string | null
+    testDuration: number | null
+    accessTimeFrom: Date | null
+    accessTimeTo: Date | null
+    allowedTakers: string | null
+    allowedStudents: string | null
+    submittedTimes: number | null
+    examPassword: string | null
+    questionAnswerMixed: boolean | null
+    shuffleQuestionAnswers: boolean | null
+    showPoint: boolean | null
+    showCorrectAnswerOption: string | null
+    pointToShowAnswer: number | null
+    addHeaderInfo: boolean | null
+    headerInfo: string | null
+    status: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    userId: string | null
   }
 
   export type TestMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     title: string | null
-    status: string | null
-    content: string | null
     grade: string | null
     subject: string | null
     purpose: string | null
     description: string | null
+    configType: string | null
+    testDuration: number | null
+    accessTimeFrom: Date | null
+    accessTimeTo: Date | null
+    allowedTakers: string | null
+    allowedStudents: string | null
+    submittedTimes: number | null
+    examPassword: string | null
+    questionAnswerMixed: boolean | null
+    shuffleQuestionAnswers: boolean | null
+    showPoint: boolean | null
+    showCorrectAnswerOption: string | null
+    pointToShowAnswer: number | null
+    addHeaderInfo: boolean | null
+    headerInfo: string | null
+    status: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    userId: string | null
   }
 
   export type TestCountAggregateOutputType = {
     id: number
+    userId: number
     title: number
-    status: number
-    content: number
     grade: number
     subject: number
     purpose: number
     description: number
+    configType: number
+    testDuration: number
+    accessTimeFrom: number
+    accessTimeTo: number
+    allowedTakers: number
+    allowedStudents: number
+    submittedTimes: number
+    examPassword: number
+    questionAnswerMixed: number
+    shuffleQuestionAnswers: number
+    showPoint: number
+    showCorrectAnswerOption: number
+    pointToShowAnswer: number
+    addHeaderInfo: number
+    headerInfo: number
+    status: number
     createdAt: number
     updatedAt: number
-    userId: number
     _all: number
   }
 
 
+  export type TestAvgAggregateInputType = {
+    testDuration?: true
+    submittedTimes?: true
+    pointToShowAnswer?: true
+  }
+
+  export type TestSumAggregateInputType = {
+    testDuration?: true
+    submittedTimes?: true
+    pointToShowAnswer?: true
+  }
+
   export type TestMinAggregateInputType = {
     id?: true
+    userId?: true
     title?: true
-    status?: true
-    content?: true
     grade?: true
     subject?: true
     purpose?: true
     description?: true
+    configType?: true
+    testDuration?: true
+    accessTimeFrom?: true
+    accessTimeTo?: true
+    allowedTakers?: true
+    allowedStudents?: true
+    submittedTimes?: true
+    examPassword?: true
+    questionAnswerMixed?: true
+    shuffleQuestionAnswers?: true
+    showPoint?: true
+    showCorrectAnswerOption?: true
+    pointToShowAnswer?: true
+    addHeaderInfo?: true
+    headerInfo?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
   }
 
   export type TestMaxAggregateInputType = {
     id?: true
+    userId?: true
     title?: true
-    status?: true
-    content?: true
     grade?: true
     subject?: true
     purpose?: true
     description?: true
+    configType?: true
+    testDuration?: true
+    accessTimeFrom?: true
+    accessTimeTo?: true
+    allowedTakers?: true
+    allowedStudents?: true
+    submittedTimes?: true
+    examPassword?: true
+    questionAnswerMixed?: true
+    shuffleQuestionAnswers?: true
+    showPoint?: true
+    showCorrectAnswerOption?: true
+    pointToShowAnswer?: true
+    addHeaderInfo?: true
+    headerInfo?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
   }
 
   export type TestCountAggregateInputType = {
     id?: true
+    userId?: true
     title?: true
-    status?: true
-    content?: true
     grade?: true
     subject?: true
     purpose?: true
     description?: true
+    configType?: true
+    testDuration?: true
+    accessTimeFrom?: true
+    accessTimeTo?: true
+    allowedTakers?: true
+    allowedStudents?: true
+    submittedTimes?: true
+    examPassword?: true
+    questionAnswerMixed?: true
+    shuffleQuestionAnswers?: true
+    showPoint?: true
+    showCorrectAnswerOption?: true
+    pointToShowAnswer?: true
+    addHeaderInfo?: true
+    headerInfo?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
-    userId?: true
     _all?: true
   }
 
@@ -6172,6 +6282,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: TestAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TestSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: TestMinAggregateInputType
@@ -6202,23 +6324,41 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: TestCountAggregateInputType | true
+    _avg?: TestAvgAggregateInputType
+    _sum?: TestSumAggregateInputType
     _min?: TestMinAggregateInputType
     _max?: TestMaxAggregateInputType
   }
 
   export type TestGroupByOutputType = {
     id: string
+    userId: string
     title: string
-    status: string
-    content: string | null
     grade: string | null
     subject: string | null
     purpose: string | null
     description: string | null
+    configType: string | null
+    testDuration: number | null
+    accessTimeFrom: Date | null
+    accessTimeTo: Date | null
+    allowedTakers: string | null
+    allowedStudents: string | null
+    submittedTimes: number | null
+    examPassword: string | null
+    questionAnswerMixed: boolean
+    shuffleQuestionAnswers: boolean
+    showPoint: boolean
+    showCorrectAnswerOption: string | null
+    pointToShowAnswer: number | null
+    addHeaderInfo: boolean
+    headerInfo: string | null
+    status: string
     createdAt: Date
     updatedAt: Date
-    userId: string
     _count: TestCountAggregateOutputType | null
+    _avg: TestAvgAggregateOutputType | null
+    _sum: TestSumAggregateOutputType | null
     _min: TestMinAggregateOutputType | null
     _max: TestMaxAggregateOutputType | null
   }
@@ -6239,16 +6379,30 @@ export namespace Prisma {
 
   export type TestSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     title?: boolean
-    status?: boolean
-    content?: boolean
     grade?: boolean
     subject?: boolean
     purpose?: boolean
     description?: boolean
+    configType?: boolean
+    testDuration?: boolean
+    accessTimeFrom?: boolean
+    accessTimeTo?: boolean
+    allowedTakers?: boolean
+    allowedStudents?: boolean
+    submittedTimes?: boolean
+    examPassword?: boolean
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: boolean
+    pointToShowAnswer?: boolean
+    addHeaderInfo?: boolean
+    headerInfo?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     questions?: boolean | Test$questionsArgs<ExtArgs>
     submissions?: boolean | Test$submissionsArgs<ExtArgs>
@@ -6257,49 +6411,91 @@ export namespace Prisma {
 
   export type TestSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     title?: boolean
-    status?: boolean
-    content?: boolean
     grade?: boolean
     subject?: boolean
     purpose?: boolean
     description?: boolean
+    configType?: boolean
+    testDuration?: boolean
+    accessTimeFrom?: boolean
+    accessTimeTo?: boolean
+    allowedTakers?: boolean
+    allowedStudents?: boolean
+    submittedTimes?: boolean
+    examPassword?: boolean
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: boolean
+    pointToShowAnswer?: boolean
+    addHeaderInfo?: boolean
+    headerInfo?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["test"]>
 
   export type TestSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     title?: boolean
-    status?: boolean
-    content?: boolean
     grade?: boolean
     subject?: boolean
     purpose?: boolean
     description?: boolean
+    configType?: boolean
+    testDuration?: boolean
+    accessTimeFrom?: boolean
+    accessTimeTo?: boolean
+    allowedTakers?: boolean
+    allowedStudents?: boolean
+    submittedTimes?: boolean
+    examPassword?: boolean
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: boolean
+    pointToShowAnswer?: boolean
+    addHeaderInfo?: boolean
+    headerInfo?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["test"]>
 
   export type TestSelectScalar = {
     id?: boolean
+    userId?: boolean
     title?: boolean
-    status?: boolean
-    content?: boolean
     grade?: boolean
     subject?: boolean
     purpose?: boolean
     description?: boolean
+    configType?: boolean
+    testDuration?: boolean
+    accessTimeFrom?: boolean
+    accessTimeTo?: boolean
+    allowedTakers?: boolean
+    allowedStudents?: boolean
+    submittedTimes?: boolean
+    examPassword?: boolean
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: boolean
+    pointToShowAnswer?: boolean
+    addHeaderInfo?: boolean
+    headerInfo?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    userId?: boolean
   }
 
-  export type TestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "status" | "content" | "grade" | "subject" | "purpose" | "description" | "createdAt" | "updatedAt" | "userId", ExtArgs["result"]["test"]>
+  export type TestOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "title" | "grade" | "subject" | "purpose" | "description" | "configType" | "testDuration" | "accessTimeFrom" | "accessTimeTo" | "allowedTakers" | "allowedStudents" | "submittedTimes" | "examPassword" | "questionAnswerMixed" | "shuffleQuestionAnswers" | "showPoint" | "showCorrectAnswerOption" | "pointToShowAnswer" | "addHeaderInfo" | "headerInfo" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["test"]>
   export type TestInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     questions?: boolean | Test$questionsArgs<ExtArgs>
@@ -6322,16 +6518,30 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string
       title: string
-      status: string
-      content: string | null
       grade: string | null
       subject: string | null
       purpose: string | null
       description: string | null
+      configType: string | null
+      testDuration: number | null
+      accessTimeFrom: Date | null
+      accessTimeTo: Date | null
+      allowedTakers: string | null
+      allowedStudents: string | null
+      submittedTimes: number | null
+      examPassword: string | null
+      questionAnswerMixed: boolean
+      shuffleQuestionAnswers: boolean
+      showPoint: boolean
+      showCorrectAnswerOption: string | null
+      pointToShowAnswer: number | null
+      addHeaderInfo: boolean
+      headerInfo: string | null
+      status: string
       createdAt: Date
       updatedAt: Date
-      userId: string
     }, ExtArgs["result"]["test"]>
     composites: {}
   }
@@ -6759,16 +6969,30 @@ export namespace Prisma {
    */
   interface TestFieldRefs {
     readonly id: FieldRef<"Test", 'String'>
+    readonly userId: FieldRef<"Test", 'String'>
     readonly title: FieldRef<"Test", 'String'>
-    readonly status: FieldRef<"Test", 'String'>
-    readonly content: FieldRef<"Test", 'String'>
     readonly grade: FieldRef<"Test", 'String'>
     readonly subject: FieldRef<"Test", 'String'>
     readonly purpose: FieldRef<"Test", 'String'>
     readonly description: FieldRef<"Test", 'String'>
+    readonly configType: FieldRef<"Test", 'String'>
+    readonly testDuration: FieldRef<"Test", 'Int'>
+    readonly accessTimeFrom: FieldRef<"Test", 'DateTime'>
+    readonly accessTimeTo: FieldRef<"Test", 'DateTime'>
+    readonly allowedTakers: FieldRef<"Test", 'String'>
+    readonly allowedStudents: FieldRef<"Test", 'String'>
+    readonly submittedTimes: FieldRef<"Test", 'Int'>
+    readonly examPassword: FieldRef<"Test", 'String'>
+    readonly questionAnswerMixed: FieldRef<"Test", 'Boolean'>
+    readonly shuffleQuestionAnswers: FieldRef<"Test", 'Boolean'>
+    readonly showPoint: FieldRef<"Test", 'Boolean'>
+    readonly showCorrectAnswerOption: FieldRef<"Test", 'String'>
+    readonly pointToShowAnswer: FieldRef<"Test", 'Int'>
+    readonly addHeaderInfo: FieldRef<"Test", 'Boolean'>
+    readonly headerInfo: FieldRef<"Test", 'String'>
+    readonly status: FieldRef<"Test", 'String'>
     readonly createdAt: FieldRef<"Test", 'DateTime'>
     readonly updatedAt: FieldRef<"Test", 'DateTime'>
-    readonly userId: FieldRef<"Test", 'String'>
   }
     
 
@@ -10515,16 +10739,30 @@ export namespace Prisma {
 
   export const TestScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     title: 'title',
-    status: 'status',
-    content: 'content',
     grade: 'grade',
     subject: 'subject',
     purpose: 'purpose',
     description: 'description',
+    configType: 'configType',
+    testDuration: 'testDuration',
+    accessTimeFrom: 'accessTimeFrom',
+    accessTimeTo: 'accessTimeTo',
+    allowedTakers: 'allowedTakers',
+    allowedStudents: 'allowedStudents',
+    submittedTimes: 'submittedTimes',
+    examPassword: 'examPassword',
+    questionAnswerMixed: 'questionAnswerMixed',
+    shuffleQuestionAnswers: 'shuffleQuestionAnswers',
+    showPoint: 'showPoint',
+    showCorrectAnswerOption: 'showCorrectAnswerOption',
+    pointToShowAnswer: 'pointToShowAnswer',
+    addHeaderInfo: 'addHeaderInfo',
+    headerInfo: 'headerInfo',
+    status: 'status',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    userId: 'userId'
+    updatedAt: 'updatedAt'
   };
 
   export type TestScalarFieldEnum = (typeof TestScalarFieldEnum)[keyof typeof TestScalarFieldEnum]
@@ -10961,16 +11199,30 @@ export namespace Prisma {
     OR?: TestWhereInput[]
     NOT?: TestWhereInput | TestWhereInput[]
     id?: StringFilter<"Test"> | string
+    userId?: StringFilter<"Test"> | string
     title?: StringFilter<"Test"> | string
-    status?: StringFilter<"Test"> | string
-    content?: StringNullableFilter<"Test"> | string | null
     grade?: StringNullableFilter<"Test"> | string | null
     subject?: StringNullableFilter<"Test"> | string | null
     purpose?: StringNullableFilter<"Test"> | string | null
     description?: StringNullableFilter<"Test"> | string | null
+    configType?: StringNullableFilter<"Test"> | string | null
+    testDuration?: IntNullableFilter<"Test"> | number | null
+    accessTimeFrom?: DateTimeNullableFilter<"Test"> | Date | string | null
+    accessTimeTo?: DateTimeNullableFilter<"Test"> | Date | string | null
+    allowedTakers?: StringNullableFilter<"Test"> | string | null
+    allowedStudents?: StringNullableFilter<"Test"> | string | null
+    submittedTimes?: IntNullableFilter<"Test"> | number | null
+    examPassword?: StringNullableFilter<"Test"> | string | null
+    questionAnswerMixed?: BoolFilter<"Test"> | boolean
+    shuffleQuestionAnswers?: BoolFilter<"Test"> | boolean
+    showPoint?: BoolFilter<"Test"> | boolean
+    showCorrectAnswerOption?: StringNullableFilter<"Test"> | string | null
+    pointToShowAnswer?: IntNullableFilter<"Test"> | number | null
+    addHeaderInfo?: BoolFilter<"Test"> | boolean
+    headerInfo?: StringNullableFilter<"Test"> | string | null
+    status?: StringFilter<"Test"> | string
     createdAt?: DateTimeFilter<"Test"> | Date | string
     updatedAt?: DateTimeFilter<"Test"> | Date | string
-    userId?: StringFilter<"Test"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     questions?: QuestionListRelationFilter
     submissions?: SubmissionListRelationFilter
@@ -10978,16 +11230,30 @@ export namespace Prisma {
 
   export type TestOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrder
     title?: SortOrder
-    status?: SortOrder
-    content?: SortOrderInput | SortOrder
     grade?: SortOrderInput | SortOrder
     subject?: SortOrderInput | SortOrder
     purpose?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    configType?: SortOrderInput | SortOrder
+    testDuration?: SortOrderInput | SortOrder
+    accessTimeFrom?: SortOrderInput | SortOrder
+    accessTimeTo?: SortOrderInput | SortOrder
+    allowedTakers?: SortOrderInput | SortOrder
+    allowedStudents?: SortOrderInput | SortOrder
+    submittedTimes?: SortOrderInput | SortOrder
+    examPassword?: SortOrderInput | SortOrder
+    questionAnswerMixed?: SortOrder
+    shuffleQuestionAnswers?: SortOrder
+    showPoint?: SortOrder
+    showCorrectAnswerOption?: SortOrderInput | SortOrder
+    pointToShowAnswer?: SortOrderInput | SortOrder
+    addHeaderInfo?: SortOrder
+    headerInfo?: SortOrderInput | SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
     user?: UserOrderByWithRelationInput
     questions?: QuestionOrderByRelationAggregateInput
     submissions?: SubmissionOrderByRelationAggregateInput
@@ -10998,16 +11264,30 @@ export namespace Prisma {
     AND?: TestWhereInput | TestWhereInput[]
     OR?: TestWhereInput[]
     NOT?: TestWhereInput | TestWhereInput[]
+    userId?: StringFilter<"Test"> | string
     title?: StringFilter<"Test"> | string
-    status?: StringFilter<"Test"> | string
-    content?: StringNullableFilter<"Test"> | string | null
     grade?: StringNullableFilter<"Test"> | string | null
     subject?: StringNullableFilter<"Test"> | string | null
     purpose?: StringNullableFilter<"Test"> | string | null
     description?: StringNullableFilter<"Test"> | string | null
+    configType?: StringNullableFilter<"Test"> | string | null
+    testDuration?: IntNullableFilter<"Test"> | number | null
+    accessTimeFrom?: DateTimeNullableFilter<"Test"> | Date | string | null
+    accessTimeTo?: DateTimeNullableFilter<"Test"> | Date | string | null
+    allowedTakers?: StringNullableFilter<"Test"> | string | null
+    allowedStudents?: StringNullableFilter<"Test"> | string | null
+    submittedTimes?: IntNullableFilter<"Test"> | number | null
+    examPassword?: StringNullableFilter<"Test"> | string | null
+    questionAnswerMixed?: BoolFilter<"Test"> | boolean
+    shuffleQuestionAnswers?: BoolFilter<"Test"> | boolean
+    showPoint?: BoolFilter<"Test"> | boolean
+    showCorrectAnswerOption?: StringNullableFilter<"Test"> | string | null
+    pointToShowAnswer?: IntNullableFilter<"Test"> | number | null
+    addHeaderInfo?: BoolFilter<"Test"> | boolean
+    headerInfo?: StringNullableFilter<"Test"> | string | null
+    status?: StringFilter<"Test"> | string
     createdAt?: DateTimeFilter<"Test"> | Date | string
     updatedAt?: DateTimeFilter<"Test"> | Date | string
-    userId?: StringFilter<"Test"> | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     questions?: QuestionListRelationFilter
     submissions?: SubmissionListRelationFilter
@@ -11015,19 +11295,35 @@ export namespace Prisma {
 
   export type TestOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrder
     title?: SortOrder
-    status?: SortOrder
-    content?: SortOrderInput | SortOrder
     grade?: SortOrderInput | SortOrder
     subject?: SortOrderInput | SortOrder
     purpose?: SortOrderInput | SortOrder
     description?: SortOrderInput | SortOrder
+    configType?: SortOrderInput | SortOrder
+    testDuration?: SortOrderInput | SortOrder
+    accessTimeFrom?: SortOrderInput | SortOrder
+    accessTimeTo?: SortOrderInput | SortOrder
+    allowedTakers?: SortOrderInput | SortOrder
+    allowedStudents?: SortOrderInput | SortOrder
+    submittedTimes?: SortOrderInput | SortOrder
+    examPassword?: SortOrderInput | SortOrder
+    questionAnswerMixed?: SortOrder
+    shuffleQuestionAnswers?: SortOrder
+    showPoint?: SortOrder
+    showCorrectAnswerOption?: SortOrderInput | SortOrder
+    pointToShowAnswer?: SortOrderInput | SortOrder
+    addHeaderInfo?: SortOrder
+    headerInfo?: SortOrderInput | SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
     _count?: TestCountOrderByAggregateInput
+    _avg?: TestAvgOrderByAggregateInput
     _max?: TestMaxOrderByAggregateInput
     _min?: TestMinOrderByAggregateInput
+    _sum?: TestSumOrderByAggregateInput
   }
 
   export type TestScalarWhereWithAggregatesInput = {
@@ -11035,16 +11331,30 @@ export namespace Prisma {
     OR?: TestScalarWhereWithAggregatesInput[]
     NOT?: TestScalarWhereWithAggregatesInput | TestScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Test"> | string
+    userId?: StringWithAggregatesFilter<"Test"> | string
     title?: StringWithAggregatesFilter<"Test"> | string
-    status?: StringWithAggregatesFilter<"Test"> | string
-    content?: StringNullableWithAggregatesFilter<"Test"> | string | null
     grade?: StringNullableWithAggregatesFilter<"Test"> | string | null
     subject?: StringNullableWithAggregatesFilter<"Test"> | string | null
     purpose?: StringNullableWithAggregatesFilter<"Test"> | string | null
     description?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    configType?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    testDuration?: IntNullableWithAggregatesFilter<"Test"> | number | null
+    accessTimeFrom?: DateTimeNullableWithAggregatesFilter<"Test"> | Date | string | null
+    accessTimeTo?: DateTimeNullableWithAggregatesFilter<"Test"> | Date | string | null
+    allowedTakers?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    allowedStudents?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    submittedTimes?: IntNullableWithAggregatesFilter<"Test"> | number | null
+    examPassword?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    questionAnswerMixed?: BoolWithAggregatesFilter<"Test"> | boolean
+    shuffleQuestionAnswers?: BoolWithAggregatesFilter<"Test"> | boolean
+    showPoint?: BoolWithAggregatesFilter<"Test"> | boolean
+    showCorrectAnswerOption?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    pointToShowAnswer?: IntNullableWithAggregatesFilter<"Test"> | number | null
+    addHeaderInfo?: BoolWithAggregatesFilter<"Test"> | boolean
+    headerInfo?: StringNullableWithAggregatesFilter<"Test"> | string | null
+    status?: StringWithAggregatesFilter<"Test"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Test"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Test"> | Date | string
-    userId?: StringWithAggregatesFilter<"Test"> | string
   }
 
   export type QuestionWhereInput = {
@@ -11507,12 +11817,26 @@ export namespace Prisma {
   export type TestCreateInput = {
     id?: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTestsInput
@@ -11522,16 +11846,30 @@ export namespace Prisma {
 
   export type TestUncheckedCreateInput = {
     id?: string
+    userId: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
     questions?: QuestionUncheckedCreateNestedManyWithoutTestInput
     submissions?: SubmissionUncheckedCreateNestedManyWithoutTestInput
   }
@@ -11539,12 +11877,26 @@ export namespace Prisma {
   export type TestUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTestsNestedInput
@@ -11554,59 +11906,115 @@ export namespace Prisma {
 
   export type TestUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
     questions?: QuestionUncheckedUpdateManyWithoutTestNestedInput
     submissions?: SubmissionUncheckedUpdateManyWithoutTestNestedInput
   }
 
   export type TestCreateManyInput = {
     id?: string
+    userId: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
   }
 
   export type TestUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TestUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
   }
 
   export type QuestionCreateInput = {
@@ -12094,6 +12502,11 @@ export namespace Prisma {
     expires?: SortOrder
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type QuestionListRelationFilter = {
     every?: QuestionWhereInput
     some?: QuestionWhereInput
@@ -12106,44 +12519,106 @@ export namespace Prisma {
 
   export type TestCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     title?: SortOrder
-    status?: SortOrder
-    content?: SortOrder
     grade?: SortOrder
     subject?: SortOrder
     purpose?: SortOrder
     description?: SortOrder
+    configType?: SortOrder
+    testDuration?: SortOrder
+    accessTimeFrom?: SortOrder
+    accessTimeTo?: SortOrder
+    allowedTakers?: SortOrder
+    allowedStudents?: SortOrder
+    submittedTimes?: SortOrder
+    examPassword?: SortOrder
+    questionAnswerMixed?: SortOrder
+    shuffleQuestionAnswers?: SortOrder
+    showPoint?: SortOrder
+    showCorrectAnswerOption?: SortOrder
+    pointToShowAnswer?: SortOrder
+    addHeaderInfo?: SortOrder
+    headerInfo?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
+  }
+
+  export type TestAvgOrderByAggregateInput = {
+    testDuration?: SortOrder
+    submittedTimes?: SortOrder
+    pointToShowAnswer?: SortOrder
   }
 
   export type TestMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     title?: SortOrder
-    status?: SortOrder
-    content?: SortOrder
     grade?: SortOrder
     subject?: SortOrder
     purpose?: SortOrder
     description?: SortOrder
+    configType?: SortOrder
+    testDuration?: SortOrder
+    accessTimeFrom?: SortOrder
+    accessTimeTo?: SortOrder
+    allowedTakers?: SortOrder
+    allowedStudents?: SortOrder
+    submittedTimes?: SortOrder
+    examPassword?: SortOrder
+    questionAnswerMixed?: SortOrder
+    shuffleQuestionAnswers?: SortOrder
+    showPoint?: SortOrder
+    showCorrectAnswerOption?: SortOrder
+    pointToShowAnswer?: SortOrder
+    addHeaderInfo?: SortOrder
+    headerInfo?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
   }
 
   export type TestMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     title?: SortOrder
-    status?: SortOrder
-    content?: SortOrder
     grade?: SortOrder
     subject?: SortOrder
     purpose?: SortOrder
     description?: SortOrder
+    configType?: SortOrder
+    testDuration?: SortOrder
+    accessTimeFrom?: SortOrder
+    accessTimeTo?: SortOrder
+    allowedTakers?: SortOrder
+    allowedStudents?: SortOrder
+    submittedTimes?: SortOrder
+    examPassword?: SortOrder
+    questionAnswerMixed?: SortOrder
+    shuffleQuestionAnswers?: SortOrder
+    showPoint?: SortOrder
+    showCorrectAnswerOption?: SortOrder
+    pointToShowAnswer?: SortOrder
+    addHeaderInfo?: SortOrder
+    headerInfo?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    userId?: SortOrder
+  }
+
+  export type TestSumOrderByAggregateInput = {
+    testDuration?: SortOrder
+    submittedTimes?: SortOrder
+    pointToShowAnswer?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type TestScalarRelationFilter = {
@@ -12179,11 +12654,6 @@ export namespace Prisma {
     text?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type QuestionScalarRelationFilter = {
     is?: QuestionWhereInput
     isNot?: QuestionWhereInput
@@ -12208,14 +12678,6 @@ export namespace Prisma {
     questionId?: SortOrder
     text?: SortOrder
     isCorrect?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -12581,6 +13043,10 @@ export namespace Prisma {
     connect?: SubmissionWhereUniqueInput | SubmissionWhereUniqueInput[]
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type UserUpdateOneRequiredWithoutTestsNestedInput = {
     create?: XOR<UserCreateWithoutTestsInput, UserUncheckedCreateWithoutTestsInput>
     connectOrCreate?: UserCreateOrConnectWithoutTestsInput
@@ -12705,10 +13171,6 @@ export namespace Prisma {
     create?: XOR<QuestionCreateWithoutChoicesInput, QuestionUncheckedCreateWithoutChoicesInput>
     connectOrCreate?: QuestionCreateOrConnectWithoutChoicesInput
     connect?: QuestionWhereUniqueInput
-  }
-
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
   }
 
   export type QuestionUpdateOneRequiredWithoutChoicesNestedInput = {
@@ -13042,12 +13504,26 @@ export namespace Prisma {
   export type TestCreateWithoutUserInput = {
     id?: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     questions?: QuestionCreateNestedManyWithoutTestInput
@@ -13057,12 +13533,26 @@ export namespace Prisma {
   export type TestUncheckedCreateWithoutUserInput = {
     id?: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     questions?: QuestionUncheckedCreateNestedManyWithoutTestInput
@@ -13186,16 +13676,30 @@ export namespace Prisma {
     OR?: TestScalarWhereInput[]
     NOT?: TestScalarWhereInput | TestScalarWhereInput[]
     id?: StringFilter<"Test"> | string
+    userId?: StringFilter<"Test"> | string
     title?: StringFilter<"Test"> | string
-    status?: StringFilter<"Test"> | string
-    content?: StringNullableFilter<"Test"> | string | null
     grade?: StringNullableFilter<"Test"> | string | null
     subject?: StringNullableFilter<"Test"> | string | null
     purpose?: StringNullableFilter<"Test"> | string | null
     description?: StringNullableFilter<"Test"> | string | null
+    configType?: StringNullableFilter<"Test"> | string | null
+    testDuration?: IntNullableFilter<"Test"> | number | null
+    accessTimeFrom?: DateTimeNullableFilter<"Test"> | Date | string | null
+    accessTimeTo?: DateTimeNullableFilter<"Test"> | Date | string | null
+    allowedTakers?: StringNullableFilter<"Test"> | string | null
+    allowedStudents?: StringNullableFilter<"Test"> | string | null
+    submittedTimes?: IntNullableFilter<"Test"> | number | null
+    examPassword?: StringNullableFilter<"Test"> | string | null
+    questionAnswerMixed?: BoolFilter<"Test"> | boolean
+    shuffleQuestionAnswers?: BoolFilter<"Test"> | boolean
+    showPoint?: BoolFilter<"Test"> | boolean
+    showCorrectAnswerOption?: StringNullableFilter<"Test"> | string | null
+    pointToShowAnswer?: IntNullableFilter<"Test"> | number | null
+    addHeaderInfo?: BoolFilter<"Test"> | boolean
+    headerInfo?: StringNullableFilter<"Test"> | string | null
+    status?: StringFilter<"Test"> | string
     createdAt?: DateTimeFilter<"Test"> | Date | string
     updatedAt?: DateTimeFilter<"Test"> | Date | string
-    userId?: StringFilter<"Test"> | string
   }
 
   export type SubmissionUpsertWithWhereUniqueWithoutUserInput = {
@@ -13546,12 +14050,26 @@ export namespace Prisma {
   export type TestCreateWithoutQuestionsInput = {
     id?: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTestsInput
@@ -13560,16 +14078,30 @@ export namespace Prisma {
 
   export type TestUncheckedCreateWithoutQuestionsInput = {
     id?: string
+    userId: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
     submissions?: SubmissionUncheckedCreateNestedManyWithoutTestInput
   }
 
@@ -13614,12 +14146,26 @@ export namespace Prisma {
   export type TestUpdateWithoutQuestionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTestsNestedInput
@@ -13628,16 +14174,30 @@ export namespace Prisma {
 
   export type TestUncheckedUpdateWithoutQuestionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
     submissions?: SubmissionUncheckedUpdateManyWithoutTestNestedInput
   }
 
@@ -13710,12 +14270,26 @@ export namespace Prisma {
   export type TestCreateWithoutSubmissionsInput = {
     id?: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutTestsInput
@@ -13724,16 +14298,30 @@ export namespace Prisma {
 
   export type TestUncheckedCreateWithoutSubmissionsInput = {
     id?: string
+    userId: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
-    userId: string
     questions?: QuestionUncheckedCreateNestedManyWithoutTestInput
   }
 
@@ -13791,12 +14379,26 @@ export namespace Prisma {
   export type TestUpdateWithoutSubmissionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutTestsNestedInput
@@ -13805,16 +14407,30 @@ export namespace Prisma {
 
   export type TestUncheckedUpdateWithoutSubmissionsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    userId?: StringFieldUpdateOperationsInput | string
     questions?: QuestionUncheckedUpdateManyWithoutTestNestedInput
   }
 
@@ -13882,12 +14498,26 @@ export namespace Prisma {
   export type TestCreateManyUserInput = {
     id?: string
     title: string
-    status?: string
-    content?: string | null
     grade?: string | null
     subject?: string | null
     purpose?: string | null
     description?: string | null
+    configType?: string | null
+    testDuration?: number | null
+    accessTimeFrom?: Date | string | null
+    accessTimeTo?: Date | string | null
+    allowedTakers?: string | null
+    allowedStudents?: string | null
+    submittedTimes?: number | null
+    examPassword?: string | null
+    questionAnswerMixed?: boolean
+    shuffleQuestionAnswers?: boolean
+    showPoint?: boolean
+    showCorrectAnswerOption?: string | null
+    pointToShowAnswer?: number | null
+    addHeaderInfo?: boolean
+    headerInfo?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13963,12 +14593,26 @@ export namespace Prisma {
   export type TestUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questions?: QuestionUpdateManyWithoutTestNestedInput
@@ -13978,12 +14622,26 @@ export namespace Prisma {
   export type TestUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     questions?: QuestionUncheckedUpdateManyWithoutTestNestedInput
@@ -13993,12 +14651,26 @@ export namespace Prisma {
   export type TestUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    content?: NullableStringFieldUpdateOperationsInput | string | null
     grade?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    configType?: NullableStringFieldUpdateOperationsInput | string | null
+    testDuration?: NullableIntFieldUpdateOperationsInput | number | null
+    accessTimeFrom?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accessTimeTo?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    allowedTakers?: NullableStringFieldUpdateOperationsInput | string | null
+    allowedStudents?: NullableStringFieldUpdateOperationsInput | string | null
+    submittedTimes?: NullableIntFieldUpdateOperationsInput | number | null
+    examPassword?: NullableStringFieldUpdateOperationsInput | string | null
+    questionAnswerMixed?: BoolFieldUpdateOperationsInput | boolean
+    shuffleQuestionAnswers?: BoolFieldUpdateOperationsInput | boolean
+    showPoint?: BoolFieldUpdateOperationsInput | boolean
+    showCorrectAnswerOption?: NullableStringFieldUpdateOperationsInput | string | null
+    pointToShowAnswer?: NullableIntFieldUpdateOperationsInput | number | null
+    addHeaderInfo?: BoolFieldUpdateOperationsInput | boolean
+    headerInfo?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

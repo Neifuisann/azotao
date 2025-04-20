@@ -15,8 +15,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useId } from "react";
-import { SignUpDialog } from "./signup-dialog";
 import { useAuth } from "../../lib/auth-context";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginSchema, LoginFormData } from "../../validation/auth-schemas";
 
 interface LoginDialogProps {
   trigger?: React.ReactNode;
@@ -25,50 +27,63 @@ interface LoginDialogProps {
 
 export function LoginDialog({ trigger, children }: LoginDialogProps) {
   const id = useId();
-  const [error, setError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { login, apiAvailable } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Reset error when dialog opens/closes
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
   useEffect(() => {
     if (!isOpen) {
-      setError(null);
+      setServerError(null);
       setLoading(false);
+      reset();
+    } else {
+      // Optional: You could also reset when it opens
+      // reset();
+      // setServerError(null);
     }
-  }, [isOpen]);
+  }, [isOpen, reset]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  const onSubmit = async (data: LoginFormData) => {
+    setServerError(null);
 
-    // Check if API is available
     if (!apiAvailable) {
-      setError("Server unavailable. Please try again later.");
-      setLoading(false);
+      setServerError("Server unavailable. Please try again later.");
       return;
     }
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    setLoading(true);
+    const { email, password } = data;
 
     try {
       const result = await login(email, password);
 
       if (!result.success) {
-        setError(result.error || "Invalid credentials");
+        setServerError(result.error || "Invalid credentials");
         setLoading(false);
         return;
       }
 
       setLoading(false);
       setIsOpen(false);
-      // Redirect to dashboard
+      reset();
       window.location.href = "/dashboard";
     } catch (error) {
-      setError("Something went wrong. Please try again.");
+      console.error("Login Dialog submission error:", error);
+      setServerError("Something went wrong. Please try again.");
       setLoading(false);
     }
   };
@@ -109,31 +124,41 @@ export function LoginDialog({ trigger, children }: LoginDialogProps) {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor={`${id}-email`}>Email</Label>
               <Input
                 id={`${id}-email`}
-                name="email"
                 placeholder="hi@yourcompany.com"
                 type="email"
-                required
+                {...register("email")}
+                disabled={!apiAvailable || loading}
               />
+              {errors.email && (
+                <p className="text-sm text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor={`${id}-password`}>Password</Label>
               <Input
                 id={`${id}-password`}
-                name="password"
                 placeholder="Enter your password"
                 type="password"
-                required
+                {...register("password")}
+                disabled={!apiAvailable || loading}
               />
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
           </div>
-          {error && (
-            <div className="text-sm text-red-500">{error}</div>
+          {serverError && (
+            <div className="text-sm text-red-500">{serverError}</div>
           )}
           <div className="flex justify-between gap-2">
             <div className="flex items-center gap-2">

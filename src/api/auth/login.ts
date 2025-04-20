@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { loginSchema } from "../../validation/auth-schemas";
 
 const prisma = new PrismaClient();
 
@@ -13,14 +14,20 @@ export async function POST(req: Request) {
 
   try {
     const body = await req.json();
-    const { email, password } = body;
 
-    if (!email || !password) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+    const validationResult = loginSchema.safeParse(body);
+
+    if (!validationResult.success) {
+      return new Response(JSON.stringify({
+        error: 'Invalid input data',
+        details: validationResult.error.flatten().fieldErrors,
+      }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       });
     }
+
+    const { email, password } = validationResult.data;
 
     const user = await prisma.user.findUnique({
       where: { email },
@@ -47,7 +54,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Don't send the password to the client
     const { password: _, ...userWithoutPassword } = user;
 
     return new Response(JSON.stringify({ 
@@ -59,6 +65,12 @@ export async function POST(req: Request) {
     });
   } catch (error) {
     console.error('Login error:', error);
+    if (error instanceof SyntaxError) {
+        return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }

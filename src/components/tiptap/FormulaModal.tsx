@@ -44,11 +44,12 @@ type Props = {
   open: boolean;
   onClose: () => void;
   editingInfo: EditFormulaMeta | null;
+  onInsertFormula: (latex: string) => void;
 };
 
 const DEFAULT_LATEX = "";
 
-export default function FormulaModal({ editor, open, onClose, editingInfo }: Props) {
+export default function FormulaModal({ editor, open, onClose, editingInfo, onInsertFormula }: Props) {
   const [latex, setLatex] = useState(DEFAULT_LATEX);
   const mathfieldRef = useRef<MathfieldElement>(null);
 
@@ -101,6 +102,7 @@ export default function FormulaModal({ editor, open, onClose, editingInfo }: Pro
       editor.commands.focus();
     }, 0);
     
+    onInsertFormula(finalLatex);
     onClose();
   };
 

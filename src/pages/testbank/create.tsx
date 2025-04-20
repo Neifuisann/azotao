@@ -362,8 +362,8 @@ export default function CreateTestPage() {
           throw new Error(result.error || "Unable to load test data");
         }
 
-        console.log("Current User:", user);
-        console.log("Fetched Test Data:", result.data);
+        //console.log("Current User:", user);
+        //console.log("Fetched Test Data:", result.data);
         
         // Check if user is authorized to edit this test
         if (user?.id && result.data.userId && result.data.userId !== user.id) {
@@ -582,7 +582,7 @@ export default function CreateTestPage() {
       const result = await response.json();
 
       if (response.ok && result.success) {
-        console.log(testId ? "Test updated" : "Draft created", result.data);
+        //console.log(testId ? "Test updated" : "Draft created", result.data);
         return result.data as SavedTestData; // Return the saved data (including ID)
       } else {
         throw new Error(result.error || (testId ? "Failed to update test" : "Failed to create test"));

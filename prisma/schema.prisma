@@ -67,17 +67,32 @@ model VerificationToken {
 }
 
 model Test {
-  id        String     @id @default(cuid())
-  title     String
-  status    String     @default("draft")
-  content   String?
-  grade       String?
-  subject     String?
-  purpose     String?
-  description String?
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  userId    String
+  id                    String    @id @default(uuid())
+  userId                String
+  title                 String
+  grade                 String?
+  subject               String?
+  purpose               String?
+  description           String?
+  configType            String?
+  testDuration          Int?
+  accessTimeFrom        DateTime?
+  accessTimeTo          DateTime?
+  allowedTakers         String?
+  allowedStudents       String?
+  submittedTimes        Int?
+  examPassword          String?
+  questionAnswerMixed   Boolean   @default(false)
+  shuffleQuestionAnswers Boolean  @default(false)
+  showPoint             Boolean   @default(false)
+  showCorrectAnswerOption String?
+  pointToShowAnswer     Int?
+  addHeaderInfo         Boolean   @default(false)
+  headerInfo            String?
+  status                String    @default("draft")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   questions Question[]
   submissions Submission[]

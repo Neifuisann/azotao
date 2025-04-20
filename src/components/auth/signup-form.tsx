@@ -3,47 +3,53 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useNavigate } from "react-router-dom"
-import bcrypt from "bcryptjs"
-import { prisma } from "../../lib/prisma"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { signupSchema, SignupFormData } from "../../validation/auth-schemas"
 
 export function SignUpForm() {
-  const [error, setError] = useState<string | null>(null)
+  const [serverError, setServerError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = async (data: SignupFormData) => {
+    setServerError(null)
     setLoading(true)
 
-    const formData = new FormData(e.currentTarget)
-    const name = formData.get("name") as string
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
-
     try {
-      const existingUser = await prisma.user.findUnique({
-        where: { email }
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
       })
 
-      if (existingUser) {
-        setError("Email already exists")
+      const result = await res.json()
+
+      if (!res.ok || !result.success) {
+        setServerError(result.error || "Failed to create account. Please try again.")
+        setLoading(false)
         return
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10)
-      
-      await prisma.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword,
-        },
-      })
-
+      reset()
       navigate("/login")
     } catch (error) {
-      setError("Something went wrong. Please try again.")
+      console.error("Signup submission error:", error);
+      setServerError("Something went wrong. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -57,37 +63,52 @@ export function SignUpForm() {
           Enter your information to create an account
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="name">Name</Label>
           <Input
             id="name"
-            name="name"
             placeholder="John Doe"
-            required
+            {...register("name")}
+            disabled={loading}
           />
+          {errors.name && (
+            <p className="text-sm text-red-500">
+              {errors.name.message}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
-            name="email"
             placeholder="m@example.com"
-            required
             type="email"
+            {...register("email")}
+            disabled={loading}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">
+              {errors.email.message}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
-            name="password"
-            required
             type="password"
+            {...register("password")}
+            disabled={loading}
           />
+          {errors.password && (
+            <p className="text-sm text-red-500">
+              {errors.password.message}
+            </p>
+          )}
         </div>
-        {error && (
-          <div className="text-sm text-red-500">{error}</div>
+        {serverError && (
+          <div className="text-sm text-red-500">{serverError}</div>
         )}
         <Button
           className="w-full"

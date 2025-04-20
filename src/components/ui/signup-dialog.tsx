@@ -16,6 +16,9 @@ import { Label } from "@/components/ui/label";
 import { useId } from "react";
 import { LoginDialog } from "./login-dialog";
 import { useAuth } from "../../lib/auth-context";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema, SignupFormData } from "../../validation/auth-schemas";
 
 interface SignUpDialogProps {
   trigger?: React.ReactNode;
@@ -24,51 +27,65 @@ interface SignUpDialogProps {
 
 export function SignUpDialog({ trigger, children }: SignUpDialogProps) {
   const id = useId();
-  const [error, setError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { signup, apiAvailable } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  // Reset error when dialog opens/closes
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
   useEffect(() => {
     if (!isOpen) {
-      setError(null);
+      setServerError(null);
       setLoading(false);
+      reset();
+    } else {
+      // Optional: Reset on open as well
+      // reset();
+      // setServerError(null);
     }
-  }, [isOpen]);
+  }, [isOpen, reset]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+  const onSubmit = async (data: SignupFormData) => {
+    setServerError(null);
 
-    // Check if API is available
     if (!apiAvailable) {
-      setError("Server unavailable. Please try again later.");
-      setLoading(false);
+      setServerError("Server unavailable. Please try again later.");
       return;
     }
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
+    setLoading(true);
+    const { name, email, password } = data;
 
     try {
       const result = await signup(name, email, password);
 
       if (!result.success) {
-        setError(result.error || "Something went wrong");
+        setServerError(result.error || "Something went wrong");
         setLoading(false);
         return;
       }
 
       setLoading(false);
       setIsOpen(false);
+      reset();
       setShowLogin(true);
     } catch (error) {
-      setError("Something went wrong. Please try again.");
+      console.error("Signup Dialog submission error:", error);
+      setServerError("Something went wrong. Please try again.");
       setLoading(false);
     }
   };
@@ -110,42 +127,56 @@ export function SignUpDialog({ trigger, children }: SignUpDialogProps) {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor={`${id}-name`}>Full name</Label>
                 <Input
                   id={`${id}-name`}
-                  name="name"
                   placeholder=""
                   type="text"
-                  required
+                  {...register("name")}
+                  disabled={!apiAvailable || loading}
                 />
+                {errors.name && (
+                  <p className="text-sm text-red-500">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`${id}-email`}>Email</Label>
                 <Input
                   id={`${id}-email`}
-                  name="email"
                   placeholder=""
                   type="email"
-                  required
+                  {...register("email")}
+                  disabled={!apiAvailable || loading}
                 />
+                {errors.email && (
+                  <p className="text-sm text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor={`${id}-password`}>Password</Label>
                 <Input
                   id={`${id}-password`}
-                  name="password"
                   placeholder="Create a secure password"
                   type="password"
-                  required
-                  minLength={8}
+                  {...register("password")}
+                  disabled={!apiAvailable || loading}
                 />
+                {errors.password && (
+                  <p className="text-sm text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
             </div>
-            {error && (
-              <div className="text-sm text-red-500">{error}</div>
+            {serverError && (
+              <div className="text-sm text-red-500">{serverError}</div>
             )}
             <Button
               type="submit"
@@ -165,11 +196,14 @@ export function SignUpDialog({ trigger, children }: SignUpDialogProps) {
           <p className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
             <button
+              type="button"
               className="font-medium text-primary underline hover:no-underline"
               onClick={() => {
+                if (loading) return;
                 setIsOpen(false);
                 setShowLogin(true);
               }}
+              disabled={loading}
             >
               Sign in
             </button>

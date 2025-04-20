@@ -159,16 +159,30 @@ exports.Prisma.VerificationTokenScalarFieldEnum = {
 
 exports.Prisma.TestScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   title: 'title',
-  status: 'status',
-  content: 'content',
   grade: 'grade',
   subject: 'subject',
   purpose: 'purpose',
   description: 'description',
+  configType: 'configType',
+  testDuration: 'testDuration',
+  accessTimeFrom: 'accessTimeFrom',
+  accessTimeTo: 'accessTimeTo',
+  allowedTakers: 'allowedTakers',
+  allowedStudents: 'allowedStudents',
+  submittedTimes: 'submittedTimes',
+  examPassword: 'examPassword',
+  questionAnswerMixed: 'questionAnswerMixed',
+  shuffleQuestionAnswers: 'shuffleQuestionAnswers',
+  showPoint: 'showPoint',
+  showCorrectAnswerOption: 'showCorrectAnswerOption',
+  pointToShowAnswer: 'pointToShowAnswer',
+  addHeaderInfo: 'addHeaderInfo',
+  headerInfo: 'headerInfo',
+  status: 'status',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  userId: 'userId'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.QuestionScalarFieldEnum = {

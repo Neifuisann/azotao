@@ -1,39 +1,56 @@
 import { useState } from "react"
-import { signIn } from "../../auth"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useNavigate } from "react-router-dom"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { loginSchema, LoginFormData } from "../../validation/auth-schemas"
+import { useAuth } from "../../lib/auth-context"
 
 export function LoginForm() {
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const { login, apiAvailable } = useAuth()
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError(null)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
+  const onSubmit = async (data: LoginFormData) => {
+    setServerError(null)
+
+    if (!apiAvailable) {
+      setServerError("Server unavailable. Please try again later.")
+      return
+    }
+
     setLoading(true)
-
-    const formData = new FormData(e.currentTarget)
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
+    const { email, password } = data
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
+      const result = await login(email, password)
 
-      if (result?.error) {
-        setError("Invalid email or password")
+      if (!result.success) {
+        setServerError(result.error || "Invalid credentials")
+        setLoading(false)
         return
       }
-
+      reset()
       navigate("/dashboard")
     } catch (error) {
-      setError("Something went wrong. Please try again.")
+      console.error("Login submission error:", error)
+      setServerError("Something went wrong. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -47,33 +64,48 @@ export function LoginForm() {
           Enter your credentials to access your account
         </p>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {!apiAvailable && (
+        <div className="bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 p-3 rounded-md text-sm text-center">
+          Server connection unavailable. Login is disabled.
+        </div>
+      )}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
-            name="email"
             placeholder="m@example.com"
-            required
             type="email"
+            {...register("email")}
+            disabled={!apiAvailable || loading}
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">
+              {errors.email.message}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <Input
             id="password"
-            name="password"
-            required
             type="password"
+            {...register("password")}
+            disabled={!apiAvailable || loading}
           />
+          {errors.password && (
+            <p className="text-sm text-red-500">
+              {errors.password.message}
+            </p>
+          )}
         </div>
-        {error && (
-          <div className="text-sm text-red-500">{error}</div>
+        {serverError && (
+          <div className="text-sm text-red-500">{serverError}</div>
         )}
         <Button
           className="w-full"
           type="submit"
-          disabled={loading}
+          disabled={loading || !apiAvailable}
         >
           {loading ? "Signing in..." : "Sign in"}
         </Button>

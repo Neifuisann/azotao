@@ -258,28 +258,67 @@ app.post('/api/tests', async (req, res) => {
 app.put('/api/tests/:testId/publish', async (req, res) => {
   try {
     const { testId } = req.params;
-    const { title } = req.body; // Extract details from body
+    // Optional: Add authorization check here - ensure the user owns the test
+    // Then parse body:
+    const {
+      title,
+      grade,
+      subject,
+      purpose,
+      description,
+      configType,
+      testDuration,
+      accessTimeFrom,
+      accessTimeTo,
+      allowedTakers,
+      allowedStudents,
+      submittedTimes,
+      examPassword,
+      questionAnswerMixed,
+      shuffleQuestionAnswers,
+      showPoint,
+      showCorrectAnswerOption,
+      pointToShowAnswer,
+      addHeaderInfo,
+      headerInfo,
+    } = req.body;
 
-    // Basic validation: ensure title is present if provided (optional: add more checks)
-    if (req.body.hasOwnProperty('title') && !title) {
-      return res.status(400).json({ success: false, error: 'Title cannot be empty when provided' });
-    }
-
-    const publishedTest = await prisma.test.update({
-      where: { id: testId }, // Use testId from params
+    // update in DB
+    const updatedTest = await prisma.test.update({
+      where: { id: testId },
       data: {
+        title,
+        grade,
+        subject,
+        purpose,
+        description,
+        configType,
+        testDuration,
+        accessTimeFrom: accessTimeFrom ? new Date(accessTimeFrom) : null,
+        accessTimeTo: accessTimeTo ? new Date(accessTimeTo) : null,
+        allowedTakers,
+        allowedStudents,
+        submittedTimes,
+        examPassword,
+        questionAnswerMixed,
+        shuffleQuestionAnswers,
+        showPoint,
+        showCorrectAnswerOption,
+        pointToShowAnswer,
+        addHeaderInfo,
+        headerInfo,
         status: "published",
-        title: title,       // Assume title comes from request body
-      }
+        updatedAt: new Date(), // Explicitly set update timestamp
+      },
     });
 
-    res.json({ success: true, data: publishedTest });
+    res.json({ success: true, data: updatedTest });
   } catch (error) {
     // Handle potential error if test not found
-    if (error.code === 'P2025') { 
+    if (error.code === 'P2025') {
       return res.status(404).json({ success: false, error: 'Test not found' });
     }
-    console.error('Error publishing test:', error);
+    console.error('Publish test error:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
@@ -300,7 +339,6 @@ app.get('/api/tests/:testId', async (req, res) => {
         subject: true,
         purpose: true,
         description: true,
-        content: true, // <-- Explicitly select the content field
         createdAt: true,
         updatedAt: true,
         userId: true,

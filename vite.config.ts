@@ -1,8 +1,15 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import type { UserConfig } from 'vite'
+import type { InlineConfig } from 'vitest'
 import type { ProxyOptions } from 'vite'
 import type { IncomingMessage, ServerResponse } from 'http'
+
+// 2) Define interface combining Vite and Vitest configs
+interface VitestConfigExport extends UserConfig {
+  test: InlineConfig
+}
 
 // https://vite.dev/config/
 export default defineConfig(async () => {
@@ -38,5 +45,10 @@ export default defineConfig(async () => {
         },
       },
     },
-  }
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: './src/setupTests.ts',
+    },
+  } as VitestConfigExport
 })
